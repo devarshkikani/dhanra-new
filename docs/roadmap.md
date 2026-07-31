@@ -319,7 +319,7 @@ During Phase 1:
 # Milestone Checklist
 
 * [x] **Phase 0 – Foundation** (Android setup, Firebase config, DI setup, build verification)
-* [ ] **Phase 1 – Authentication**
+* [x] **Phase 1 – Authentication** (Splash, Onboarding, Login with Email & Phone OTP, Register, OTP Verification, Password Reset, Auth Guard, Unit Tests)
 * [ ] **Phase 2 – Dashboard**
 * [ ] **Phase 3 – Accounts**
 * [ ] **Phase 4 – Categories**

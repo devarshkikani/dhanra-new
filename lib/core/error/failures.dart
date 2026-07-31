@@ -20,3 +20,7 @@ class CacheFailure extends Failure {
 class NetworkFailure extends Failure {
   const NetworkFailure([super.message = 'No Internet connection']);
 }
+
+class AuthFailure extends Failure {
+  const AuthFailure([super.message = 'Authentication failure occurred']);
+}

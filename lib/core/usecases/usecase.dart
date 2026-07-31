@@ -5,6 +5,8 @@ abstract class UseCase<TResult, Params> {
 }
 
 class NoParams extends Equatable {
+  const NoParams();
+
   @override
   List<Object?> get props => [];
 }
