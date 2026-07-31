@@ -1,0 +1,50 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+.localized
+
+# IntelliJ / Android Studio / VS Code
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+lib/generated_plugin_registrant.dart
+
+# Symbol files
+*.gz
+
+# Android secrets & local configs
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
+android/.gradle/
+android/local.properties
+android/captures/
+android/app/google-services.json
+
+# iOS / macOS
+ios/Runner/GoogleService-Info.plist
+ios/Pods/
+ios/Podfile.lock
+macos/Pods/
+macos/Podfile.lock
+
+# Coverage & Reports
+coverage/
