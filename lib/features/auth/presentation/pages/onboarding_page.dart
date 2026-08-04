@@ -59,7 +59,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 itemCount: _slides.length,
                 itemBuilder: (context, index) {
                   final slide = _slides[index];
-                  IconData iconData = Icons.auto_graph_rounded;
+                  var iconData = Icons.auto_graph_rounded;
                   if (slide['icon'] == 'psychology') {
                     iconData = Icons.psychology_rounded;
                   } else if (slide['icon'] == 'savings') {
@@ -67,7 +67,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   }
 
                   return Padding(
-                    padding: const EdgeInsets.all(32.0),
+                    padding: const EdgeInsets.all(32),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -78,8 +78,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             color: AppColors.primary.withValues(alpha: 0.12),
                             shape: BoxShape.circle,
                             border: Border.all(
-                                color: AppColors.primary.withValues(alpha: 0.3),
-                                width: 2),
+                              color: AppColors.primary.withValues(alpha: 0.3),
+                              width: 2,
+                            ),
                           ),
                           child: Icon(
                             iconData,
@@ -132,7 +133,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.all(32),
               child: ElevatedButton(
                 onPressed: () {
                   if (_currentPage < _slides.length - 1) {

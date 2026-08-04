@@ -1,6 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:dhanra_new/core/error/exceptions.dart';
 import 'package:dhanra_new/features/sample_feature/data/models/post_model.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class PostRemoteDataSource {

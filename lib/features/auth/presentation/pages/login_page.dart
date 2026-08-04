@@ -14,7 +14,8 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _emailFormKey = GlobalKey<FormState>();
   final _phoneFormKey = GlobalKey<FormState>();
@@ -90,7 +91,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         backgroundColor: AppColors.darkBackground,
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -172,8 +173,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               style: const TextStyle(color: Colors.white),
                               decoration: const InputDecoration(
                                 labelText: 'Email Address',
-                                prefixIcon: Icon(Icons.email_outlined,
-                                    color: AppColors.darkTextSecondary),
+                                prefixIcon: Icon(
+                                  Icons.email_outlined,
+                                  color: AppColors.darkTextSecondary,
+                                ),
                               ),
                               validator: (val) {
                                 if (val == null || val.isEmpty) {
@@ -189,8 +192,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               style: const TextStyle(color: Colors.white),
                               decoration: InputDecoration(
                                 labelText: 'Password',
-                                prefixIcon: const Icon(Icons.lock_outline,
-                                    color: AppColors.darkTextSecondary),
+                                prefixIcon: const Icon(
+                                  Icons.lock_outline,
+                                  color: AppColors.darkTextSecondary,
+                                ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword
@@ -258,8 +263,10 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               decoration: const InputDecoration(
                                 labelText: 'Mobile Number',
                                 hintText: '9876543210',
-                                prefixIcon: Icon(Icons.phone_android_outlined,
-                                    color: AppColors.darkTextSecondary),
+                                prefixIcon: Icon(
+                                  Icons.phone_android_outlined,
+                                  color: AppColors.darkTextSecondary,
+                                ),
                               ),
                               validator: (val) {
                                 if (val == null || val.length < 10) {

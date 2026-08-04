@@ -42,7 +42,8 @@ class AuthRepositoryImpl implements IAuthRepository {
     required String password,
   }) async {
     try {
-      final userModel = await _remoteDataSource.signInWithEmail(email, password);
+      final userModel =
+          await _remoteDataSource.signInWithEmail(email, password);
       await _localDataSource.cacheUser(userModel);
       return (null, userModel.toEntity());
     } on ServerException catch (e) {
@@ -60,7 +61,10 @@ class AuthRepositoryImpl implements IAuthRepository {
   }) async {
     try {
       final userModel = await _remoteDataSource.signUpWithEmail(
-          email, password, displayName);
+        email,
+        password,
+        displayName,
+      );
       await _localDataSource.cacheUser(userModel);
       return (null, userModel.toEntity());
     } on ServerException catch (e) {

@@ -31,7 +31,7 @@ void main() {
         .thenAnswer((_) async => (null, tPosts));
 
     // act
-    final result = await useCase(NoParams());
+    final result = await useCase(const NoParams());
 
     // assert
     expect(result, (null, tPosts));
@@ -46,7 +46,7 @@ void main() {
         .thenAnswer((_) async => (tFailure, null));
 
     // act
-    final result = await useCase(NoParams());
+    final result = await useCase(const NoParams());
 
     // assert
     expect(result, (tFailure, null));

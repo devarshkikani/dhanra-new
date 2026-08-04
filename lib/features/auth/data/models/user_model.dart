@@ -14,6 +14,16 @@ abstract class UserModel with _$UserModel {
     String? photoUrl,
     DateTime? createdAt,
   }) = _UserModel;
+  factory UserModel.fromEntity(UserEntity entity) {
+    return UserModel(
+      id: entity.id,
+      email: entity.email,
+      phoneNumber: entity.phoneNumber,
+      displayName: entity.displayName,
+      photoUrl: entity.photoUrl,
+      createdAt: entity.createdAt,
+    );
+  }
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -28,17 +38,6 @@ abstract class UserModel with _$UserModel {
       displayName: displayName,
       photoUrl: photoUrl,
       createdAt: createdAt,
-    );
-  }
-
-  factory UserModel.fromEntity(UserEntity entity) {
-    return UserModel(
-      id: entity.id,
-      email: entity.email,
-      phoneNumber: entity.phoneNumber,
-      displayName: entity.displayName,
-      photoUrl: entity.photoUrl,
-      createdAt: entity.createdAt,
     );
   }
 }

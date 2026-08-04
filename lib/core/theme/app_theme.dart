@@ -38,9 +38,12 @@ abstract class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.darkSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        hintStyle: const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14),
-        labelStyle: const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        hintStyle:
+            const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14),
+        labelStyle:
+            const TextStyle(color: AppColors.darkTextSecondary, fontSize: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: AppColors.glassBorder),
@@ -84,9 +87,7 @@ abstract class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         secondary: AppColors.accent,
-        surface: AppColors.lightSurface,
         error: AppColors.error,
-        onPrimary: Colors.white,
         onSurface: AppColors.lightTextPrimary,
       ),
       appBarTheme: const AppBarTheme(
@@ -111,9 +112,12 @@ abstract class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.lightSurface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        hintStyle: const TextStyle(color: AppColors.lightTextSecondary, fontSize: 14),
-        labelStyle: const TextStyle(color: AppColors.lightTextSecondary, fontSize: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        hintStyle:
+            const TextStyle(color: AppColors.lightTextSecondary, fontSize: 14),
+        labelStyle:
+            const TextStyle(color: AppColors.lightTextSecondary, fontSize: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade300),

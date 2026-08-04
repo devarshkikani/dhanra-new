@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:dhanra_new/core/di/injection.dart';
 import 'package:dhanra_new/features/sample_feature/presentation/bloc/post_bloc.dart';
 import 'package:dhanra_new/features/sample_feature/presentation/bloc/post_event.dart';
 import 'package:dhanra_new/features/sample_feature/presentation/bloc/post_state.dart';
 import 'package:dhanra_new/features/sample_feature/presentation/widgets/post_card.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostPage extends StatelessWidget {

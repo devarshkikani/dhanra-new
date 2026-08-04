@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24),
             child: Form(
               key: _formKey,
               child: Column(
@@ -93,8 +93,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       labelText: 'Full Name',
-                      prefixIcon: Icon(Icons.person_outline,
-                          color: AppColors.darkTextSecondary),
+                      prefixIcon: Icon(
+                        Icons.person_outline,
+                        color: AppColors.darkTextSecondary,
+                      ),
                     ),
                     validator: (val) {
                       if (val == null || val.trim().isEmpty) {
@@ -110,8 +112,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       labelText: 'Email Address',
-                      prefixIcon: Icon(Icons.email_outlined,
-                          color: AppColors.darkTextSecondary),
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: AppColors.darkTextSecondary,
+                      ),
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) {
@@ -127,8 +131,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock_outline,
-                          color: AppColors.darkTextSecondary),
+                      prefixIcon: const Icon(
+                        Icons.lock_outline,
+                        color: AppColors.darkTextSecondary,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:dhanra_new/features/sample_feature/domain/entities/post.dart';
+import 'package:flutter/material.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({

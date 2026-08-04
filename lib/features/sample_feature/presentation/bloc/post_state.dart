@@ -1,5 +1,5 @@
-import 'package:equatable/equatable.dart';
 import 'package:dhanra_new/features/sample_feature/domain/entities/post.dart';
+import 'package:equatable/equatable.dart';
 
 abstract class PostState extends Equatable {
   const PostState();

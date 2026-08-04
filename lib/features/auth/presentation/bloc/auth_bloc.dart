@@ -110,10 +110,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (failure != null) {
       emit(AuthFailureState(failure.message));
     } else if (verificationId != null) {
-      emit(OtpSentState(
-        verificationId: verificationId,
-        phoneNumber: event.phoneNumber,
-      ));
+      emit(
+        OtpSentState(
+          verificationId: verificationId,
+          phoneNumber: event.phoneNumber,
+        ),
+      );
     } else {
       emit(const AuthFailureState('Failed to send OTP'));
     }

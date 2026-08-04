@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dhanra_new/core/error/exceptions.dart';
 import 'package:dhanra_new/features/auth/data/models/user_model.dart';
@@ -7,9 +8,17 @@ import 'package:injectable/injectable.dart';
 abstract class AuthRemoteDataSource {
   Future<UserModel?> getCurrentUser();
   Future<UserModel> signInWithEmail(String email, String password);
-  Future<UserModel> signUpWithEmail(String email, String password, String displayName);
+  Future<UserModel> signUpWithEmail(
+    String email,
+    String password,
+    String displayName,
+  );
   Future<String> sendPhoneOtp(String phoneNumber);
-  Future<UserModel> verifyPhoneOtp(String verificationId, String smsCode, String? displayName);
+  Future<UserModel> verifyPhoneOtp(
+    String verificationId,
+    String smsCode,
+    String? displayName,
+  );
   Future<void> resetPassword(String email);
   Future<void> signOut();
 }
@@ -27,9 +36,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final currentUser = _firebaseAuth.currentUser;
       if (currentUser == null) return null;
 
-      final doc = await _firestore.collection('users').doc(currentUser.uid).get();
+      final doc =
+          await _firestore.collection('users').doc(currentUser.uid).get();
       if (doc.exists && doc.data() != null) {
-        return UserModel.fromJson({'id': currentUser.uid, ...doc.data()!});
+        return _mapFirestoreDocToUserModel(
+          currentUser.uid,
+          doc.data()!,
+          fallbackUser: currentUser,
+        );
       }
 
       return UserModel(
@@ -55,7 +69,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final user = credential.user;
       if (user == null) throw const ServerException('User sign in failed');
 
-      final userModel = await _fetchOrCreateUserProfile(user, user.displayName ?? '');
+      final userModel =
+          await _fetchOrCreateUserProfile(user, user.displayName ?? '');
       return userModel;
     } on FirebaseAuthException catch (e) {
       throw ServerException(e.message ?? 'Authentication failed');
@@ -66,7 +81,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> signUpWithEmail(
-      String email, String password, String displayName) async {
+    String email,
+    String password,
+    String displayName,
+  ) async {
     try {
       final credential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -87,37 +105,37 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<String> sendPhoneOtp(String phoneNumber) async {
+    final completer = Completer<String>();
+
     try {
-      String? verificationIdResult;
       await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
           // Auto-verification handled in flow
         },
         verificationFailed: (FirebaseAuthException e) {
-          throw ServerException(e.message ?? 'Phone verification failed');
+          if (!completer.isCompleted) {
+            completer.completeError(
+              ServerException(e.message ?? 'Phone verification failed'),
+            );
+          }
         },
         codeSent: (String verificationId, int? resendToken) {
-          verificationIdResult = verificationId;
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
         },
         codeAutoRetrievalTimeout: (String verificationId) {
-          verificationIdResult = verificationId;
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
         },
         timeout: const Duration(seconds: 60),
       );
 
-      // Wait briefly for codeSent callback
-      int waited = 0;
-      while (verificationIdResult == null && waited < 50) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        waited++;
-      }
-
-      if (verificationIdResult == null) {
-        throw const ServerException('OTP timeout. Please try again.');
-      }
-
-      return verificationIdResult!;
+      return await completer.future;
+    } on ServerException catch (_) {
+      rethrow;
     } catch (e) {
       throw ServerException(e.toString());
     }
@@ -125,13 +143,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> verifyPhoneOtp(
-      String verificationId, String smsCode, String? displayName) async {
+    String verificationId,
+    String smsCode,
+    String? displayName,
+  ) async {
     try {
       final credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: smsCode,
       );
-      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
       final user = userCredential.user;
       if (user == null) throw const ServerException('OTP Verification failed');
 
@@ -171,7 +193,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
     final now = DateTime.now();
     if (doc.exists && doc.data() != null) {
-      return UserModel.fromJson({'id': user.uid, ...doc.data()!});
+      return _mapFirestoreDocToUserModel(
+        user.uid,
+        doc.data()!,
+        fallbackUser: user,
+        fallbackName: name,
+      );
     }
 
     final newUser = UserModel(
@@ -192,5 +219,37 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     });
 
     return newUser;
+  }
+
+  UserModel _mapFirestoreDocToUserModel(
+    String uid,
+    Map<String, dynamic> data, {
+    User? fallbackUser,
+    String? fallbackName,
+  }) {
+    DateTime? parseDate(dynamic val) {
+      if (val is Timestamp) return val.toDate();
+      if (val is String) return DateTime.tryParse(val);
+      return null;
+    }
+
+    final emailVal = data['email'];
+    final phoneVal = data['phoneNumber'];
+    final nameVal = data['displayName'];
+
+    return UserModel(
+      id: uid,
+      email: (emailVal is String && emailVal.isNotEmpty)
+          ? emailVal
+          : (fallbackUser?.email ?? ''),
+      phoneNumber: (phoneVal is String && phoneVal.isNotEmpty)
+          ? phoneVal
+          : (fallbackUser?.phoneNumber ?? ''),
+      displayName: (nameVal is String && nameVal.isNotEmpty)
+          ? nameVal
+          : (fallbackName ?? fallbackUser?.displayName ?? 'User'),
+      photoUrl: data['photoUrl'] as String? ?? fallbackUser?.photoURL,
+      createdAt: parseDate(data['createdAt']) ?? DateTime.now(),
+    );
   }
 }

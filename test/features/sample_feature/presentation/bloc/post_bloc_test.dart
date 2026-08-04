@@ -39,7 +39,7 @@ void main() {
   blocTest<PostBloc, PostState>(
     'emits [PostLoadingState, PostLoadedState] when FetchPostsEvent is successful',
     build: () {
-      when(() => mockGetPostsUseCase(NoParams()))
+      when(() => mockGetPostsUseCase(const NoParams()))
           .thenAnswer((_) async => (null, tPosts));
       return postBloc;
     },
@@ -49,14 +49,14 @@ void main() {
       PostLoadedState(tPosts),
     ],
     verify: (_) {
-      verify(() => mockGetPostsUseCase(NoParams())).called(1);
+      verify(() => mockGetPostsUseCase(const NoParams())).called(1);
     },
   );
 
   blocTest<PostBloc, PostState>(
     'emits [PostLoadingState, PostErrorState] when FetchPostsEvent fails',
     build: () {
-      when(() => mockGetPostsUseCase(NoParams())).thenAnswer(
+      when(() => mockGetPostsUseCase(const NoParams())).thenAnswer(
         (_) async => (const ServerFailure('Failed to fetch posts'), null),
       );
       return postBloc;
@@ -67,7 +67,7 @@ void main() {
       const PostErrorState('Failed to fetch posts'),
     ],
     verify: (_) {
-      verify(() => mockGetPostsUseCase(NoParams())).called(1);
+      verify(() => mockGetPostsUseCase(const NoParams())).called(1);
     },
   );
 }

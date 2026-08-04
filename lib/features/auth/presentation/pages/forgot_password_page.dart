@@ -40,7 +40,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
-                  'Password reset link has been sent to your email address.'),
+                'Password reset link has been sent to your email address.',
+              ),
               backgroundColor: AppColors.success,
             ),
           );
@@ -62,7 +63,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         ),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24),
             child: Form(
               key: _formKey,
               child: Column(
@@ -91,8 +92,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       labelText: 'Email Address',
-                      prefixIcon: Icon(Icons.email_outlined,
-                          color: AppColors.darkTextSecondary),
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: AppColors.darkTextSecondary,
+                      ),
                     ),
                     validator: (val) {
                       if (val == null || val.isEmpty) {

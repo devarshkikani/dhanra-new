@@ -10,9 +10,9 @@ import 'package:pinput/pinput.dart';
 
 class OtpVerificationPage extends StatefulWidget {
   const OtpVerificationPage({
-    super.key,
     required this.verificationId,
     required this.phoneNumber,
+    super.key,
   });
 
   final String verificationId;
@@ -86,9 +86,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         ),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 24),
                 const Text(
@@ -114,7 +113,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                   controller: _pinController,
                   defaultPinTheme: defaultPinTheme,
                   focusedPinTheme: focusedPinTheme,
-                  showCursor: true,
                   onCompleted: _onVerifyOtp,
                 ),
                 const SizedBox(height: 40),

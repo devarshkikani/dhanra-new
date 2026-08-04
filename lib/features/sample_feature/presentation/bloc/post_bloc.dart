@@ -18,7 +18,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     Emitter<PostState> emit,
   ) async {
     emit(const PostLoadingState());
-    final (failure, posts) = await _getPostsUseCase(NoParams());
+    final (failure, posts) = await _getPostsUseCase(const NoParams());
     if (failure != null) {
       emit(PostErrorState(failure.message));
     } else if (posts != null) {
