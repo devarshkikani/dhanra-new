@@ -1,3 +1,4 @@
+import 'package:dhanra_new/core/common_widgets/main_shell_page.dart';
 import 'package:dhanra_new/core/di/injection.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dhanra_new/features/auth/presentation/pages/forgot_password_page.dart';
@@ -6,10 +7,13 @@ import 'package:dhanra_new/features/auth/presentation/pages/onboarding_page.dart
 import 'package:dhanra_new/features/auth/presentation/pages/otp_verification_page.dart';
 import 'package:dhanra_new/features/auth/presentation/pages/register_page.dart';
 import 'package:dhanra_new/features/auth/presentation/pages/splash_page.dart';
-import 'package:dhanra_new/features/sample_feature/presentation/pages/post_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:dhanra_new/features/accounts/presentation/pages/accounts_page.dart';
+import 'package:dhanra_new/features/categories/presentation/pages/categories_page.dart';
+import 'package:dhanra_new/features/transactions/presentation/pages/transactions_page.dart';
 
 abstract class AppRoutes {
   static const String splash = '/';
@@ -19,6 +23,9 @@ abstract class AppRoutes {
   static const String otpVerification = '/otp-verification';
   static const String forgotPassword = '/forgot-password';
   static const String home = '/home';
+  static const String transactions = '/transactions';
+  static const String accounts = '/accounts';
+  static const String categories = '/categories';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -71,7 +78,19 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.home,
-      builder: (context, state) => const PostPage(),
+      builder: (context, state) => const MainShellPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.transactions,
+      builder: (context, state) => const TransactionsPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.accounts,
+      builder: (context, state) => const AccountsPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.categories,
+      builder: (context, state) => const CategoriesPage(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

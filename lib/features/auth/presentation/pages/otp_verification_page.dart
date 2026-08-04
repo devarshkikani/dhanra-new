@@ -1,5 +1,8 @@
+import 'package:dhanra_new/core/common_widgets/app_button.dart';
+import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/app_gradients.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_event.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_state.dart';
@@ -50,18 +53,25 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       textStyle: const TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: AppColors.textPrimary,
       ),
       decoration: BoxDecoration(
-        color: AppColors.darkSurface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.glassBorder),
+        color: AppColors.inputBackground,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.inputBorder),
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration!.copyWith(
         border: Border.all(color: AppColors.primary, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.25),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
     );
 
@@ -83,59 +93,77 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         appBar: AppBar(
           title: const Text('Verify OTP'),
           backgroundColor: AppColors.darkBackground,
+          elevation: 0,
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
-                const Text(
-                  'Enter Verification Code',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.backgroundGlow,
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  GlassCard(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.mark_email_read_outlined,
+                            color: AppColors.primary,
+                            size: 36,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Enter Verification Code',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'We sent a 6-digit verification code to\n${widget.phoneNumber}',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 14,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'We sent a 6-digit verification code to ${widget.phoneNumber}',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.darkTextSecondary,
-                    fontSize: 14,
+                  const SizedBox(height: 32),
+                  Pinput(
+                    length: 6,
+                    controller: _pinController,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: focusedPinTheme,
+                    onCompleted: _onVerifyOtp,
                   ),
-                ),
-                const SizedBox(height: 40),
-                Pinput(
-                  length: 6,
-                  controller: _pinController,
-                  defaultPinTheme: defaultPinTheme,
-                  focusedPinTheme: focusedPinTheme,
-                  onCompleted: _onVerifyOtp,
-                ),
-                const SizedBox(height: 40),
-                BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    return ElevatedButton(
-                      onPressed: state is AuthLoadingState
-                          ? null
-                          : () => _onVerifyOtp(_pinController.text),
-                      child: state is AuthLoadingState
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text('Verify & Proceed'),
-                    );
-                  },
-                ),
-              ],
+                  const Spacer(),
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return AppButton(
+                        text: 'Verify & Proceed',
+                        isLoading: state is AuthLoadingState,
+                        onPressed: () => _onVerifyOtp(_pinController.text),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
             ),
           ),
         ),

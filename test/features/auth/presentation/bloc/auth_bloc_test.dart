@@ -17,9 +17,11 @@ import 'package:mocktail/mocktail.dart';
 
 class MockGetCurrentUserUseCase extends Mock implements GetCurrentUserUseCase {}
 
-class MockSignInWithEmailUseCase extends Mock implements SignInWithEmailUseCase {}
+class MockSignInWithEmailUseCase extends Mock
+    implements SignInWithEmailUseCase {}
 
-class MockSignUpWithEmailUseCase extends Mock implements SignUpWithEmailUseCase {}
+class MockSignUpWithEmailUseCase extends Mock
+    implements SignUpWithEmailUseCase {}
 
 class MockSendPhoneOtpUseCase extends Mock implements SendPhoneOtpUseCase {}
 

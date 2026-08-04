@@ -23,7 +23,8 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     try {
       final jsonString = _prefs.getString(cachedUserKey);
       if (jsonString != null) {
-        return UserModel.fromJson(json.decode(jsonString) as Map<String, dynamic>);
+        return UserModel.fromJson(
+            json.decode(jsonString) as Map<String, dynamic>);
       }
       return null;
     } catch (e) {

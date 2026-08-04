@@ -1,5 +1,9 @@
+import 'package:dhanra_new/core/common_widgets/app_button.dart';
+import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
+import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/app_gradients.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_event.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_state.dart';
@@ -89,119 +93,140 @@ class _LoginPageState extends State<LoginPage>
       },
       child: Scaffold(
         backgroundColor: AppColors.darkBackground,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 32),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(16),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.backgroundGlow,
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          gradient: AppGradients.primary,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.account_balance_wallet_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.account_balance_wallet_rounded,
-                        color: AppColors.primary,
-                        size: 32,
+                      const SizedBox(width: 14),
+                      ShaderMask(
+                        shaderCallback: (bounds) =>
+                            AppGradients.primary.createShader(bounds),
+                        child: const Text(
+                          'Dhanra',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Text(
-                      'Dhanra',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-                const Text(
-                  'Welcome Back',
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Sign in to manage your financial portfolio.',
-                  style: TextStyle(
-                    color: AppColors.darkTextSecondary,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 28),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.darkSurface,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: TabBar(
-                    controller: _tabController,
-                    indicatorColor: AppColors.primary,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    labelColor: Colors.white,
-                    unselectedLabelColor: AppColors.darkTextSecondary,
-                    tabs: const [
-                      Tab(text: 'Email'),
-                      Tab(text: 'Mobile OTP'),
                     ],
                   ),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  height: 340,
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      // Email Form
-                      Form(
-                        key: _emailFormKey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: const InputDecoration(
-                                labelText: 'Email Address',
-                                prefixIcon: Icon(
+                  const SizedBox(height: 32),
+                  const Text(
+                    'Welcome Back',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Sign in to manage your financial portfolio.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  GlassCard(
+                    padding: const EdgeInsets.all(4),
+                    child: TabBar(
+                      controller: _tabController,
+                      indicator: BoxDecoration(
+                        gradient: AppGradients.primary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      dividerColor: Colors.transparent,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: AppColors.textSecondary,
+                      labelStyle: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                      tabs: const [
+                        Tab(text: 'Email'),
+                        Tab(text: 'Mobile OTP'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    height: 360,
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        // Email Form
+                        Form(
+                          key: _emailFormKey,
+                          child: Column(
+                            children: [
+                              AppTextField(
+                                controller: _emailController,
+                                label: 'Email Address',
+                                hintText: 'example@domain.com',
+                                keyboardType: TextInputType.emailAddress,
+                                prefixIcon: const Icon(
                                   Icons.email_outlined,
-                                  color: AppColors.darkTextSecondary,
+                                  color: AppColors.textSecondary,
+                                  size: 20,
                                 ),
+                                validator: (val) {
+                                  if (val == null || val.isEmpty) {
+                                    return 'Enter a valid email address';
+                                  }
+                                  return null;
+                                },
                               ),
-                              validator: (val) {
-                                if (val == null || val.isEmpty) {
-                                  return 'Enter a valid email address';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              controller: _passwordController,
-                              obscureText: _obscurePassword,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                labelText: 'Password',
+                              const SizedBox(height: 16),
+                              AppTextField(
+                                controller: _passwordController,
+                                label: 'Password',
+                                hintText: '••••••••',
+                                obscureText: _obscurePassword,
                                 prefixIcon: const Icon(
                                   Icons.lock_outline,
-                                  color: AppColors.darkTextSecondary,
+                                  color: AppColors.textSecondary,
+                                  size: 20,
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword
                                         ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined,
-                                    color: AppColors.darkTextSecondary,
+                                    color: AppColors.textSecondary,
+                                    size: 20,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -209,127 +234,108 @@ class _LoginPageState extends State<LoginPage>
                                     });
                                   },
                                 ),
+                                validator: (val) {
+                                  if (val == null || val.length < 6) {
+                                    return 'Password must be at least 6 characters';
+                                  }
+                                  return null;
+                                },
                               ),
-                              validator: (val) {
-                                if (val == null || val.length < 6) {
-                                  return 'Password must be at least 6 characters';
-                                }
-                                return null;
-                              },
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () =>
-                                    context.push(AppRoutes.forgotPassword),
-                                child: const Text(
-                                  'Forgot Password?',
-                                  style: TextStyle(color: AppColors.primary),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () =>
+                                      context.push(AppRoutes.forgotPassword),
+                                  child: const Text(
+                                    'Forgot Password?',
+                                    style: TextStyle(
+                                      color: AppColors.secondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                            const Spacer(),
-                            BlocBuilder<AuthBloc, AuthState>(
-                              builder: (context, state) {
-                                return ElevatedButton(
-                                  onPressed: state is AuthLoadingState
-                                      ? null
-                                      : _onEmailSubmit,
-                                  child: state is AuthLoadingState
-                                      ? const SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      : const Text('Sign In'),
-                                );
-                              },
-                            ),
-                          ],
+                              const Spacer(),
+                              BlocBuilder<AuthBloc, AuthState>(
+                                builder: (context, state) {
+                                  return AppButton(
+                                    text: 'Sign In',
+                                    isLoading: state is AuthLoadingState,
+                                    onPressed: _onEmailSubmit,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      // Phone OTP Form
-                      Form(
-                        key: _phoneFormKey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _phoneController,
-                              keyboardType: TextInputType.phone,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: const InputDecoration(
-                                labelText: 'Mobile Number',
+                        // Phone OTP Form
+                        Form(
+                          key: _phoneFormKey,
+                          child: Column(
+                            children: [
+                              AppTextField(
+                                controller: _phoneController,
+                                label: 'Mobile Number',
                                 hintText: '9876543210',
-                                prefixIcon: Icon(
+                                keyboardType: TextInputType.phone,
+                                prefixIcon: const Icon(
                                   Icons.phone_android_outlined,
-                                  color: AppColors.darkTextSecondary,
+                                  color: AppColors.textSecondary,
+                                  size: 20,
+                                ),
+                                validator: (val) {
+                                  if (val == null || val.length < 10) {
+                                    return 'Enter a valid mobile number';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'We will send a 6-digit OTP to verify your mobile number.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
-                              validator: (val) {
-                                if (val == null || val.length < 10) {
-                                  return 'Enter a valid mobile number';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'We will send a 6-digit OTP to verify your mobile number.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.darkTextSecondary,
+                              const Spacer(),
+                              BlocBuilder<AuthBloc, AuthState>(
+                                builder: (context, state) {
+                                  return AppButton(
+                                    text: 'Send OTP',
+                                    isLoading: state is AuthLoadingState,
+                                    onPressed: _onPhoneSubmit,
+                                  );
+                                },
                               ),
-                            ),
-                            const Spacer(),
-                            BlocBuilder<AuthBloc, AuthState>(
-                              builder: (context, state) {
-                                return ElevatedButton(
-                                  onPressed: state is AuthLoadingState
-                                      ? null
-                                      : _onPhoneSubmit,
-                                  child: state is AuthLoadingState
-                                      ? const SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      : const Text('Send OTP'),
-                                );
-                              },
-                            ),
-                          ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Don't have an account? ",
+                        style: TextStyle(color: AppColors.textSecondary),
+                      ),
+                      GestureDetector(
+                        onTap: () => context.push(AppRoutes.register),
+                        child: const Text(
+                          'Register',
+                          style: TextStyle(
+                            color: AppColors.secondary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Don't have an account? ",
-                      style: TextStyle(color: AppColors.darkTextSecondary),
-                    ),
-                    GestureDetector(
-                      onTap: () => context.push(AppRoutes.register),
-                      child: const Text(
-                        'Register',
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

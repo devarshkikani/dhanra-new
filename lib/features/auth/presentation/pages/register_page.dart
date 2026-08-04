@@ -1,5 +1,9 @@
+import 'package:dhanra_new/core/common_widgets/app_button.dart';
+import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
+import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/app_gradients.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_event.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_state.dart';
@@ -62,85 +66,99 @@ class _RegisterPageState extends State<RegisterPage> {
         appBar: AppBar(
           title: const Text('Create Account'),
           backgroundColor: AppColors.darkBackground,
+          elevation: 0,
         ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Get Started with Dhanra',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: AppGradients.backgroundGlow,
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 12),
+                    const GlassCard(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Get Started with Dhanra',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Create your free account to track expenses, manage bank accounts, and set budgets.',
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 14,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Create your free account to track expenses and set budgets.',
-                    style: TextStyle(
-                      color: AppColors.darkTextSecondary,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  TextFormField(
-                    controller: _nameController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
-                      labelText: 'Full Name',
-                      prefixIcon: Icon(
+                    const SizedBox(height: 24),
+                    AppTextField(
+                      controller: _nameController,
+                      label: 'Full Name',
+                      hintText: 'e.g. Don Daniel',
+                      prefixIcon: const Icon(
                         Icons.person_outline,
-                        color: AppColors.darkTextSecondary,
+                        color: AppColors.textSecondary,
+                        size: 20,
                       ),
+                      validator: (val) {
+                        if (val == null || val.trim().isEmpty) {
+                          return 'Enter your full name';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Enter your full name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
-                      labelText: 'Email Address',
-                      prefixIcon: Icon(
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      controller: _emailController,
+                      label: 'Email Address',
+                      hintText: 'name@example.com',
+                      keyboardType: TextInputType.emailAddress,
+                      prefixIcon: const Icon(
                         Icons.email_outlined,
-                        color: AppColors.darkTextSecondary,
+                        color: AppColors.textSecondary,
+                        size: 20,
                       ),
+                      validator: (val) {
+                        if (val == null || val.isEmpty) {
+                          return 'Enter a valid email address';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (val) {
-                      if (val == null || val.isEmpty) {
-                        return 'Enter a valid email address';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Password',
+                    const SizedBox(height: 16),
+                    AppTextField(
+                      controller: _passwordController,
+                      label: 'Password',
+                      hintText: '••••••••',
+                      obscureText: _obscurePassword,
                       prefixIcon: const Icon(
                         Icons.lock_outline,
-                        color: AppColors.darkTextSecondary,
+                        color: AppColors.textSecondary,
+                        size: 20,
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
-                          color: AppColors.darkTextSecondary,
+                          color: AppColors.textSecondary,
+                          size: 20,
                         ),
                         onPressed: () {
                           setState(() {
@@ -148,35 +166,45 @@ class _RegisterPageState extends State<RegisterPage> {
                           });
                         },
                       ),
+                      validator: (val) {
+                        if (val == null || val.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (val) {
-                      if (val == null || val.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 32),
-                  BlocBuilder<AuthBloc, AuthState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: state is AuthLoadingState
-                            ? null
-                            : _onRegisterSubmit,
-                        child: state is AuthLoadingState
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Text('Create Account'),
-                      );
-                    },
-                  ),
-                ],
+                    const SizedBox(height: 32),
+                    BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        return AppButton(
+                          text: 'Create Account',
+                          isLoading: state is AuthLoadingState,
+                          onPressed: _onRegisterSubmit,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Already have an account? ',
+                          style: TextStyle(color: AppColors.textSecondary),
+                        ),
+                        GestureDetector(
+                          onTap: () => context.push(AppRoutes.login),
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: AppColors.secondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
