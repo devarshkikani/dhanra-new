@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage>
         backgroundColor: AppColors.darkBackground,
         body: Container(
           decoration: const BoxDecoration(
-            gradient: AppGradients.backgroundGlow,
+            color: AppColors.darkBackground,
           ),
           child: SafeArea(
             child: SingleChildScrollView(

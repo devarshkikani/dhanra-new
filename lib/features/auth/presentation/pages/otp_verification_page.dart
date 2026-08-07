@@ -97,7 +97,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         ),
         body: Container(
           decoration: const BoxDecoration(
-            gradient: AppGradients.backgroundGlow,
+            color: AppColors.darkBackground,
           ),
           child: SafeArea(
             child: Padding(

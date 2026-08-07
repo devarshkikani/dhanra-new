@@ -70,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         body: Container(
           decoration: const BoxDecoration(
-            gradient: AppGradients.backgroundGlow,
+            color: AppColors.darkBackground,
           ),
           child: SafeArea(
             child: SingleChildScrollView(

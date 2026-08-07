@@ -129,7 +129,7 @@ class _GoalsView extends StatelessWidget {
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: AppGradients.backgroundGlow,
+          color: AppColors.darkBackground,
         ),
         child: SafeArea(
           bottom: false,

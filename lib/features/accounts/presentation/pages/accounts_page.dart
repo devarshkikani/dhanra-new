@@ -1,8 +1,8 @@
-import 'package:dhanra_new/core/common_widgets/app_button.dart';
-import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/di/injection.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
-import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/theme/app_spacing.dart';
+import 'package:dhanra_new/core/theme/app_typography.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart';
 import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
 import 'package:dhanra_new/features/accounts/presentation/bloc/accounts_bloc.dart';
 import 'package:dhanra_new/features/accounts/presentation/bloc/accounts_event.dart';
@@ -80,32 +80,16 @@ class _AccountsView extends StatelessWidget {
 
   void _confirmDelete(BuildContext context, AccountEntity account) {
     final bloc = context.read<AccountsBloc>();
-    showDialog<void>(
+    AppDialog.show(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.darkSurface,
-        title: const Text('Delete Account',
-            style: TextStyle(color: AppColors.textPrimary)),
-        content: Text(
-          'Are you sure you want to delete "${account.name}"?',
-          style: const TextStyle(color: AppColors.textSecondary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel',
-                style: TextStyle(color: AppColors.textSecondary)),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              bloc.add(DeleteAccountRequestedEvent(account.id));
-            },
-            child:
-                const Text('Delete', style: TextStyle(color: AppColors.error)),
-          ),
-        ],
-      ),
+      title: 'Delete Account',
+      message: 'Are you sure you want to delete "${account.name}"?',
+      primaryButtonText: 'Delete',
+      secondaryButtonText: 'Cancel',
+      icon: Icons.delete_outline_rounded,
+      onPrimaryPressed: () {
+        bloc.add(DeleteAccountRequestedEvent(account.id));
+      },
     );
   }
 
@@ -113,143 +97,125 @@ class _AccountsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
-      appBar: AppBar(
-        title: const Text('Accounts & Wallets'),
-        backgroundColor: AppColors.darkBackground,
-        elevation: 0,
+      appBar: const AppAppBar(
+        title: 'Accounts & Wallets',
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.backgroundGlow,
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: BlocBuilder<AccountsBloc, AccountsState>(
-            builder: (context, state) {
-              if (state is AccountsLoadingState ||
-                  state is AccountsInitialState) {
-                return const Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
-                );
-              }
+      body: SafeArea(
+        bottom: false,
+        child: BlocBuilder<AccountsBloc, AccountsState>(
+          builder: (context, state) {
+            if (state is AccountsLoadingState ||
+                state is AccountsInitialState) {
+              return const AppLoading(message: 'Loading accounts...');
+            }
 
-              if (state is AccountsErrorState) {
-                return Center(
-                  child: Text(
-                    state.errorMessage,
-                    style: const TextStyle(color: AppColors.error),
-                  ),
-                );
-              }
+            if (state is AccountsErrorState) {
+              return AppErrorState(
+                errorMessage: state.errorMessage,
+                onRetry: () => context
+                    .read<AccountsBloc>()
+                    .add(const LoadAccountsEvent()),
+              );
+            }
 
-              if (state is AccountsLoadedState) {
-                final accounts = state.accounts;
+            if (state is AccountsLoadedState) {
+              final accounts = state.accounts;
 
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.only(
-                    left: 20,
-                    right: 20,
-                    top: 10,
-                    bottom: 110,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 1. Net Worth Header Card
-                      GlassCard(
-                        padding: const EdgeInsets.all(20),
-                        borderRadius: 22,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'TOTAL NET WORTH',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '₹${state.netWorth.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: AppButton(
-                                    text: 'Transfer Funds',
-                                    icon: Icons.swap_horiz_rounded,
-                                    height: 44,
-                                    onPressed: () =>
-                                        _showTransferDialog(context, accounts),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: AppButton(
-                                    text: 'Add Account',
-                                    type: AppButtonType.secondary,
-                                    icon: Icons.add_rounded,
-                                    height: 44,
-                                    onPressed: () =>
-                                        _showAddEditDialog(context),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // 2. Accounts List Grouped by Type
-                      const Text(
-                        'Your Accounts',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      if (accounts.isEmpty) ...[
-                        const GlassCard(
-                          padding: EdgeInsets.all(24),
-                          child: Center(
-                            child: Text(
-                              'No accounts added yet. Tap "Add Account" to get started.',
-                              style: TextStyle(color: AppColors.textSecondary),
-                              textAlign: TextAlign.center,
+              return SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.md,
+                  right: AppSpacing.md,
+                  top: AppSpacing.xs,
+                  bottom: 110,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1. Net Worth Header Card
+                    AppCard(
+                      variant: AppCardVariant.hero,
+                      padding: AppSpacing.paddingMD,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'TOTAL NET WORTH',
+                            style: AppTypography.labelSmall.copyWith(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                              color: AppColors.textSecondary,
                             ),
                           ),
-                        ),
-                      ] else ...[
-                        ...accounts.map(
-                          (acc) => AccountCard(
-                            account: acc,
-                            onEdit: () =>
-                                _showAddEditDialog(context, account: acc),
-                            onDelete: () => _confirmDelete(context, acc),
+                          AppSpacing.vGapXS,
+                          Text(
+                            '₹${state.netWorth.toStringAsFixed(2)}',
+                            style: AppTypography.displayMedium.copyWith(
+                              color: Colors.white,
+                            ),
                           ),
+                          AppSpacing.vGapMD,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AppButton(
+                                  title: 'Transfer',
+                                  icon: Icons.swap_horiz_rounded,
+                                  height: 44,
+                                  onPressed: () =>
+                                      _showTransferDialog(context, accounts),
+                                ),
+                              ),
+                              AppSpacing.hGapSM,
+                              Expanded(
+                                child: AppButton(
+                                  title: 'Add Account',
+                                  variant: AppButtonVariant.secondary,
+                                  icon: Icons.add_rounded,
+                                  height: 44,
+                                  onPressed: () =>
+                                      _showAddEditDialog(context),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    AppSpacing.vGapLG,
+
+                    // 2. Accounts List Grouped by Type
+                    Text(
+                      'Your Accounts',
+                      style: AppTypography.headlineSmall.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    AppSpacing.vGapSM,
+
+                    if (accounts.isEmpty) ...[
+                      AppEmptyState(
+                        title: 'No Accounts Added',
+                        message: 'Tap "Add Account" to manage your bank accounts & wallets.',
+                        buttonText: 'Add Account',
+                        onAction: () => _showAddEditDialog(context),
+                      ),
+                    ] else ...[
+                      ...accounts.map(
+                        (acc) => AccountCard(
+                          account: acc,
+                          onEdit: () =>
+                              _showAddEditDialog(context, account: acc),
+                          onDelete: () => _confirmDelete(context, acc),
                         ),
-                      ],
+                      ),
                     ],
-                  ),
-                );
-              }
+                  ],
+                ),
+              );
+            }
 
-              return const SizedBox.shrink();
-            },
-          ),
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );

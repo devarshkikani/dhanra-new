@@ -1,5 +1,7 @@
 import 'package:dhanra_new/core/theme/app_colors.dart';
-import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/theme/app_radius.dart';
+import 'package:dhanra_new/core/theme/app_spacing.dart';
+import 'package:dhanra_new/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 class HeroBalanceCard extends StatelessWidget {
@@ -18,20 +20,13 @@ class HeroBalanceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: AppSpacing.paddingLG,
       decoration: BoxDecoration(
-        gradient: AppGradients.heroCard,
-        borderRadius: BorderRadius.circular(24),
+        color: AppColors.darkSurface,
+        borderRadius: AppRadius.borderXL,
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.12),
+          color: AppColors.primary.withValues(alpha: 0.25),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.15),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,33 +37,30 @@ class HeroBalanceCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'TOTAL BALANCE',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                    style: AppTypography.labelSmall.copyWith(
                       letterSpacing: 1.2,
                       color: AppColors.textSecondary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppSpacing.vGapXXS,
                   Text(
                     'Hello, $userName 👋',
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: AppTypography.titleMedium.copyWith(
                       color: AppColors.textPrimary,
                     ),
                   ),
                 ],
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.secondary.withValues(alpha: 0.12),
+                  borderRadius: AppRadius.borderMD,
                   border: Border.all(
-                    color: AppColors.secondary.withValues(alpha: 0.3),
+                    color: AppColors.secondary.withValues(alpha: 0.25),
                   ),
                 ),
                 child: Row(
@@ -78,11 +70,10 @@ class HeroBalanceCard extends StatelessWidget {
                       color: AppColors.secondary,
                       size: 16,
                     ),
-                    const SizedBox(width: 4),
+                    AppSpacing.hGapXXS,
                     Text(
                       '${savingsRate.toStringAsFixed(1)}% Saved',
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: AppTypography.labelMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.secondary,
                       ),
@@ -92,14 +83,14 @@ class HeroBalanceCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          AppSpacing.vGapMD,
           Text(
             '₹${totalBalance.toStringAsFixed(2)}',
-            style: const TextStyle(
+            style: AppTypography.displayLarge.copyWith(
               fontSize: 34,
               fontWeight: FontWeight.bold,
               color: Colors.white,
-              letterSpacing: 0.5,
+              letterSpacing: -0.5,
             ),
           ),
         ],

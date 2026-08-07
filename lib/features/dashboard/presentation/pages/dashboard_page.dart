@@ -1,7 +1,9 @@
 import 'package:dhanra_new/core/common_widgets/transaction_tile.dart';
 import 'package:dhanra_new/core/di/injection.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
-import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/theme/app_spacing.dart';
+import 'package:dhanra_new/core/theme/app_typography.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart';
 import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_state.dart';
@@ -12,7 +14,6 @@ import 'package:dhanra_new/features/dashboard/presentation/widgets/income_expens
 import 'package:dhanra_new/features/dashboard/presentation/widgets/quick_actions_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:go_router/go_router.dart';
 
@@ -35,151 +36,132 @@ class _DashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.backgroundGlow,
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: BlocBuilder<DashboardBloc, DashboardState>(
-            builder: (context, state) {
-              if (state is DashboardLoadingState ||
-                  state is DashboardInitialState) {
-                return const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.primary,
-                  ),
-                );
-              }
+      appBar: const AppAppBar(
+        showLogo: true,
+      ),
+      body: SafeArea(
+        bottom: false,
+        child: BlocBuilder<DashboardBloc, DashboardState>(
+          builder: (context, state) {
+            if (state is DashboardLoadingState ||
+                state is DashboardInitialState) {
+              return const AppLoading(message: 'Fetching financial overview...');
+            }
 
-              if (state is DashboardErrorState) {
-                return Center(
+            if (state is DashboardErrorState) {
+              return AppErrorState(
+                errorMessage: state.errorMessage,
+                onRetry: () => context
+                    .read<DashboardBloc>()
+                    .add(const LoadDashboardEvent()),
+              );
+            }
+
+            if (state is DashboardLoadedState) {
+              final summary = state.summary;
+
+              return RefreshIndicator(
+                color: AppColors.primary,
+                backgroundColor: AppColors.darkCard,
+                onRefresh: () async {
+                  context
+                      .read<DashboardBloc>()
+                      .add(const RefreshDashboardEvent());
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.only(
+                    left: AppSpacing.md,
+                    right: AppSpacing.md,
+                    top: AppSpacing.xs,
+                    bottom: 110,
+                  ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        Icons.error_outline_rounded,
-                        size: 48,
-                        color: AppColors.error,
+                      // 1. Hero Net Balance Card
+                      HeroBalanceCard(
+                        userName: summary.userName,
+                        totalBalance: summary.totalBalance,
+                        savingsRate: summary.savingsRatePercentage,
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        state.errorMessage,
-                        style: const TextStyle(color: AppColors.textSecondary),
+                      AppSpacing.vGapMD,
+
+                      // 2. Income vs Expense Side-by-Side Chips
+                      IncomeExpenseRow(
+                        income: summary.monthlyIncome,
+                        expense: summary.monthlyExpense,
                       ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => context
-                            .read<DashboardBloc>()
-                            .add(const LoadDashboardEvent()),
-                        child: const Text('Retry'),
+                      AppSpacing.vGapLG,
+
+                      // 3. Quick Action Shortcuts
+                      QuickActionsRow(
+                        onAddExpense: () {
+                          context.push(AppRoutes.transactions);
+                        },
+                        onAddIncome: () {
+                          context.push(AppRoutes.transactions);
+                        },
+                        onTransfer: () {
+                          context.push(AppRoutes.accounts);
+                        },
+                        onAiAssistant: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('AI Financial Insights triggered'),
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                );
-              }
+                      AppSpacing.vGapLG,
 
-              if (state is DashboardLoadedState) {
-                final summary = state.summary;
-
-                return RefreshIndicator(
-                  color: AppColors.primary,
-                  backgroundColor: AppColors.darkCard,
-                  onRefresh: () async {
-                    context
-                        .read<DashboardBloc>()
-                        .add(const RefreshDashboardEvent());
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                      top: 16,
-                      bottom: 110, // Generous padding for floating nav pill bar
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 1. Hero Net Balance Card
-                        HeroBalanceCard(
-                          userName: summary.userName,
-                          totalBalance: summary.totalBalance,
-                          savingsRate: summary.savingsRatePercentage,
+                      // 4. Monthly Budget Progress Card
+                      GestureDetector(
+                        onTap: () => context.push(AppRoutes.budgets),
+                        child: BudgetOverviewCard(
+                          spentAmount: summary.budgetSpentAmount,
+                          totalLimit: summary.budgetTotalLimit,
                         ),
-                        const SizedBox(height: 16),
+                      ),
+                      AppSpacing.vGapMD,
 
-                        // 2. Income vs Expense Side-by-Side Chips
-                        IncomeExpenseRow(
-                          income: summary.monthlyIncome,
-                          expense: summary.monthlyExpense,
-                        ),
-                        const SizedBox(height: 22),
+                      // 5. AI Summary Card
+                      AiSummaryCard(
+                        insightText: summary.aiInsightSummary,
+                      ),
+                      AppSpacing.vGapLG,
 
-                        // 3. Quick Action Shortcuts
-                        QuickActionsRow(
-                          onAddExpense: () {
-                            context.push(AppRoutes.transactions);
-                          },
-                          onAddIncome: () {
-                            context.push(AppRoutes.transactions);
-                          },
-                          onTransfer: () {
-                            context.push(AppRoutes.accounts);
-                          },
-                          onAiAssistant: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('AI Financial Insights triggered'),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 24),
-
-                        // 4. Monthly Budget Progress Card
-                        GestureDetector(
-                          onTap: () => context.push(AppRoutes.budgets),
-                          child: BudgetOverviewCard(
-                            spentAmount: summary.budgetSpentAmount,
-                            totalLimit: summary.budgetTotalLimit,
+                      // 6. Recent Transactions Feed
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Recent Transactions',
+                            style: AppTypography.headlineSmall.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 18),
-
-                        // 5. AI Summary Card
-                        AiSummaryCard(
-                          insightText: summary.aiInsightSummary,
-                        ),
-                        const SizedBox(height: 24),
-
-                        // 6. Recent Transactions Feed
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Recent Transactions',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                          TextButton(
+                            onPressed: () =>
+                                context.push(AppRoutes.transactions),
+                            child: Text(
+                              'See All',
+                              style: AppTypography.labelLarge.copyWith(
+                                color: AppColors.secondary,
                               ),
                             ),
-                            TextButton(
-                              onPressed: () =>
-                                  context.push(AppRoutes.transactions),
-                              child: const Text(
-                                'See All',
-                                style: TextStyle(
-                                  color: AppColors.secondary,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
+                          ),
+                        ],
+                      ),
+                      AppSpacing.vGapXS,
+
+                      if (summary.recentTransactions.isEmpty)
+                        const AppEmptyState(
+                          title: 'No Recent Transactions',
+                          message: 'Your recent transactions will show up here.',
+                        )
+                      else
                         ...summary.recentTransactions.map(
                           (tx) => TransactionTile(
                             title: tx.title,
@@ -189,15 +171,14 @@ class _DashboardView extends StatelessWidget {
                             isCredit: tx.isCredit,
                           ),
                         ),
-                      ],
-                    ),
+                    ],
                   ),
-                );
-              }
+                ),
+              );
+            }
 
-              return const SizedBox.shrink();
-            },
-          ),
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );

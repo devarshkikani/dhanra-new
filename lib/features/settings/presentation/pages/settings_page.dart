@@ -1,7 +1,8 @@
-import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
-import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/theme/app_spacing.dart';
+import 'package:dhanra_new/core/theme/app_typography.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,207 +13,189 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBackground,
-      appBar: AppBar(
-        title: const Text('Settings & Configuration'),
-        backgroundColor: AppColors.darkBackground,
-        elevation: 0,
+      appBar: const AppAppBar(
+        title: 'Settings & Configuration',
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppGradients.backgroundGlow,
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 10,
-              bottom: 110,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 1. User Profile Header Card
-                GlassCard(
-                  padding: const EdgeInsets.all(20),
-                  borderRadius: 22,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        decoration: const BoxDecoration(
-                          gradient: AppGradients.primary,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'DD',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+      body: SafeArea(
+        bottom: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(
+            left: AppSpacing.md,
+            right: AppSpacing.md,
+            top: AppSpacing.xs,
+            bottom: 110,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 1. User Profile Header Card
+              AppCard(
+                variant: AppCardVariant.standard,
+                padding: AppSpacing.paddingMD,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
                       ),
-                      const SizedBox(width: 16),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Don Daniel',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'don.daniel@dhanra.app',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.secondary.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Text(
-                          'Pro Member',
-                          style: TextStyle(
-                            fontSize: 11,
+                      child: Center(
+                        child: Text(
+                          'DD',
+                          style: AppTypography.headlineSmall.copyWith(
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.secondary,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // 2. Preferences & Configuration
-                const Text(
-                  'Preferences & Management',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.8,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Category Management Tile
-                _buildSettingsTile(
-                  context: context,
-                  icon: Icons.category_rounded,
-                  color: AppColors.primary,
-                  title: 'Category Management',
-                  subtitle:
-                      'Manage income & expense categories, sub-categories, icons & colors',
-                  onTap: () => context.push(AppRoutes.categories),
-                ),
-                const SizedBox(height: 10),
-
-                // Budget Management Shortcut Tile
-                _buildSettingsTile(
-                  context: context,
-                  icon: Icons.pie_chart_rounded,
-                  color: AppColors.secondary,
-                  title: 'Budget Limits & Warnings',
-                  subtitle:
-                      'Configure monthly category caps & warning thresholds',
-                  onTap: () => context.push(AppRoutes.budgets),
-                ),
-                const SizedBox(height: 10),
-
-                // Savings Goals & Milestones Tile
-                _buildSettingsTile(
-                  context: context,
-                  icon: Icons.savings_rounded,
-                  color: AppColors.credit,
-                  title: 'Savings Goals & Milestones',
-                  subtitle: 'Manage savings targets, deposit logs & deadlines',
-                  onTap: () => context.push(AppRoutes.goals),
-                ),
-                const SizedBox(height: 10),
-
-                // AI Financial Assistant Settings Tile
-                _buildSettingsTile(
-                  context: context,
-                  icon: Icons.auto_awesome_rounded,
-                  color: AppColors.accent,
-                  title: 'AI Financial Assistant',
-                  subtitle:
-                      'Configure smart insight predictions & subscription detection',
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text('AI Financial Assistant coming in Phase 12'),
-                        backgroundColor: AppColors.primary,
+                    ),
+                    AppSpacing.hGapMD,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Don Daniel',
+                            style: AppTypography.titleLarge.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          AppSpacing.vGapXXS,
+                          Text(
+                            'don.daniel@dhanra.app',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Pro Member',
+                        style: AppTypography.labelSmall.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.secondary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
+              ),
+              AppSpacing.vGapLG,
 
-                // 3. App Settings
-                const Text(
-                  'App Settings & Security',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.8,
-                    color: AppColors.textSecondary,
-                  ),
+              // 2. Preferences & Configuration
+              Text(
+                'Preferences & Management',
+                style: AppTypography.labelSmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: AppColors.textSecondary,
                 ),
-                const SizedBox(height: 12),
+              ),
+              AppSpacing.vGapSM,
 
-                _buildSettingsTile(
-                  context: context,
-                  icon: Icons.lock_outline_rounded,
-                  color: AppColors.credit,
-                  title: 'Security & App Lock',
-                  subtitle: 'Enable PIN lock and biometric authentication',
-                  onTap: () {},
-                ),
-                const SizedBox(height: 10),
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.category_rounded,
+                color: AppColors.primary,
+                title: 'Category Management',
+                subtitle:
+                    'Manage income & expense categories, sub-categories, icons & colors',
+                onTap: () => context.push(AppRoutes.categories),
+              ),
+              AppSpacing.vGapXS,
 
-                _buildSettingsTile(
-                  context: context,
-                  icon: Icons.notifications_none_rounded,
-                  color: AppColors.primary,
-                  title: 'Notifications & Alerts',
-                  subtitle:
-                      'Bill payment reminders & budget alert notifications',
-                  onTap: () {},
-                ),
-                const SizedBox(height: 10),
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.pie_chart_rounded,
+                color: AppColors.secondary,
+                title: 'Budget Limits & Warnings',
+                subtitle:
+                    'Configure monthly category caps & warning thresholds',
+                onTap: () => context.push(AppRoutes.budgets),
+              ),
+              AppSpacing.vGapXS,
 
-                _buildSettingsTile(
-                  context: context,
-                  icon: Icons.download_rounded,
-                  color: AppColors.secondary,
-                  title: 'Export Financial Data',
-                  subtitle:
-                      'Export transactions and accounts as CSV or PDF report',
-                  onTap: () {},
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.savings_rounded,
+                color: AppColors.credit,
+                title: 'Savings Goals & Milestones',
+                subtitle: 'Manage savings targets, deposit logs & deadlines',
+                onTap: () => context.push(AppRoutes.goals),
+              ),
+              AppSpacing.vGapXS,
+
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.auto_awesome_rounded,
+                color: AppColors.accent,
+                title: 'AI Financial Assistant',
+                subtitle:
+                    'Configure smart insight predictions & subscription detection',
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content:
+                          Text('AI Financial Assistant active'),
+                      backgroundColor: AppColors.primary,
+                    ),
+                  );
+                },
+              ),
+              AppSpacing.vGapLG,
+
+              // 3. App Settings
+              Text(
+                'App Settings & Security',
+                style: AppTypography.labelSmall.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: AppColors.textSecondary,
                 ),
-              ],
-            ),
+              ),
+              AppSpacing.vGapSM,
+
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.lock_outline_rounded,
+                color: AppColors.credit,
+                title: 'Security & App Lock',
+                subtitle: 'Enable PIN lock and biometric authentication',
+                onTap: () {},
+              ),
+              AppSpacing.vGapXS,
+
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.notifications_none_rounded,
+                color: AppColors.primary,
+                title: 'Notifications & Alerts',
+                subtitle:
+                    'Bill payment reminders & budget alert notifications',
+                onTap: () {},
+              ),
+              AppSpacing.vGapXS,
+
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.download_rounded,
+                color: AppColors.secondary,
+                title: 'Export Financial Data',
+                subtitle:
+                    'Export transactions and accounts as CSV or PDF report',
+                onTap: () {},
+              ),
+            ],
           ),
         ),
       ),
@@ -227,38 +210,35 @@ class SettingsPage extends StatelessWidget {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return GlassCard(
-      borderRadius: 18,
-      padding: const EdgeInsets.all(16),
+    return AppCard(
+      variant: AppCardVariant.standard,
+      padding: AppSpacing.paddingMD,
       onTap: onTap,
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(12),
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: color, size: 22),
+            child: Icon(icon, color: color, size: 20),
           ),
-          const SizedBox(width: 14),
+          AppSpacing.hGapMD,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+                  style: AppTypography.titleMedium.copyWith(
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 3),
+                AppSpacing.vGapXXS,
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    fontSize: 12,
+                  style: AppTypography.bodySmall.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -267,7 +247,7 @@ class SettingsPage extends StatelessWidget {
           ),
           const Icon(
             Icons.arrow_forward_ios_rounded,
-            size: 16,
+            size: 14,
             color: AppColors.textSecondary,
           ),
         ],

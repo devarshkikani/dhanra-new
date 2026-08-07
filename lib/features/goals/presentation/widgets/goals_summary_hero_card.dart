@@ -1,6 +1,5 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
-import 'package:dhanra_new/core/theme/app_gradients.dart';
 import 'package:dhanra_new/features/goals/domain/entities/goals_summary_entity.dart';
 import 'package:flutter/material.dart';
 
