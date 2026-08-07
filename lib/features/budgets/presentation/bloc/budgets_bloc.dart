@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:dhanra_new/core/services/notification_service.dart';
+import 'package:dhanra_new/features/budgets/domain/entities/budget_entity.dart';
 import 'package:dhanra_new/features/budgets/domain/entities/monthly_budget_summary_entity.dart';
 import 'package:dhanra_new/features/budgets/domain/usecases/delete_category_budget_usecase.dart';
 import 'package:dhanra_new/features/budgets/domain/usecases/get_monthly_budget_summary_usecase.dart';
@@ -48,6 +50,7 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     emit(const BudgetsLoadingState());
     try {
       final summary = await _getMonthlyBudgetSummaryUseCase();
+      _evaluateBudgetAlerts(summary);
       emit(BudgetsLoadedState(summary));
     } catch (e) {
       emit(BudgetsErrorState(e.toString()));
@@ -58,7 +61,22 @@ class BudgetsBloc extends Bloc<BudgetsEvent, BudgetsState> {
     MonthlyBudgetSummaryUpdatedEvent event,
     Emitter<BudgetsState> emit,
   ) {
+    _evaluateBudgetAlerts(event.summary);
     emit(BudgetsLoadedState(event.summary));
+  }
+
+  void _evaluateBudgetAlerts(MonthlyBudgetSummaryEntity summary) {
+    for (final budget in summary.categoryBudgets) {
+      if (budget.status == BudgetStatus.warning ||
+          budget.status == BudgetStatus.exceeded) {
+        NotificationService().showBudgetAlertNotification(
+          categoryName: budget.categoryName,
+          spent: budget.spentAmount,
+          cap: budget.limitAmount,
+          percentage: budget.percentageSpent * 100,
+        );
+      }
+    }
   }
 
   Future<void> _onSetTotalLimit(

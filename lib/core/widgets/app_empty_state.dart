@@ -56,6 +56,7 @@ class AppEmptyState extends StatelessWidget {
                 'assets/images/empty_transactions.png',
                 height: 120,
                 fit: BoxFit.contain,
+                color: AppColors.textSecondary,
                 errorBuilder: (_, __, ___) => const Icon(
                   Icons.inbox_rounded,
                   size: 48,
@@ -66,13 +67,15 @@ class AppEmptyState extends StatelessWidget {
             ],
             Text(
               title,
-              style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.headlineSmall
+                  .copyWith(color: AppColors.textPrimary),
               textAlign: TextAlign.center,
             ),
             AppSpacing.vGapXS,
             Text(
               message,
-              style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodyMedium
+                  .copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             if (buttonText != null && onAction != null) ...[

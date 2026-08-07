@@ -119,6 +119,10 @@ import '../../features/goals/domain/usecases/get_goals_summary_usecase.dart'
     as _i1027;
 import '../../features/goals/domain/usecases/update_goal_usecase.dart' as _i929;
 import '../../features/goals/presentation/bloc/goals_bloc.dart' as _i157;
+import '../../features/notifications/data/datasources/notification_settings_local_data_source.dart'
+    as _i156;
+import '../../features/notifications/presentation/bloc/notifications_bloc.dart'
+    as _i1041;
 import '../../features/sample_feature/data/datasources/post_local_datasource.dart'
     as _i468;
 import '../../features/sample_feature/data/datasources/post_remote_datasource.dart'
@@ -131,6 +135,9 @@ import '../../features/sample_feature/domain/usecases/get_posts_usecase.dart'
     as _i803;
 import '../../features/sample_feature/presentation/bloc/post_bloc.dart'
     as _i601;
+import '../../features/settings/data/datasources/app_settings_local_data_source.dart'
+    as _i917;
+import '../../features/settings/presentation/bloc/settings_bloc.dart' as _i585;
 import '../../features/transactions/data/datasources/transaction_local_data_source.dart'
     as _i371;
 import '../../features/transactions/data/repositories/transaction_repository_impl.dart'
@@ -149,6 +156,9 @@ import '../../features/transactions/presentation/bloc/transactions_bloc.dart'
     as _i439;
 import '../network/dio_client.dart' as _i667;
 import '../network/network_info.dart' as _i932;
+import '../services/backup_export_service.dart' as _i425;
+import '../services/notification_service.dart' as _i941;
+import '../services/security_service.dart' as _i337;
 import 'injection.dart' as _i464;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -172,6 +182,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i59.FirebaseAuth>(() => externalModule.firebaseAuth);
     gh.lazySingleton<_i974.FirebaseFirestore>(() => externalModule.firestore);
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
+    gh.lazySingleton<_i941.NotificationService>(
+        () => _i941.NotificationService());
+    gh.lazySingleton<_i337.SecurityService>(() => _i337.SecurityService());
     gh.lazySingleton<_i838.DashboardLocalDataSource>(
         () => _i838.DashboardLocalDataSourceImpl());
     gh.lazySingleton<_i371.TransactionLocalDataSource>(
@@ -221,6 +234,11 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i371.TransactionLocalDataSource>(),
           gh<_i838.DashboardLocalDataSource>(),
         ));
+    gh.lazySingleton<_i156.NotificationSettingsLocalDataSource>(() =>
+        _i156.NotificationSettingsLocalDataSource(
+            gh<_i460.SharedPreferences>()));
+    gh.lazySingleton<_i917.AppSettingsLocalDataSource>(
+        () => _i917.AppSettingsLocalDataSource(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i1062.GetDashboardSummaryUseCase>(() =>
         _i1062.GetDashboardSummaryUseCase(gh<_i665.DashboardRepository>()));
     gh.lazySingleton<_i521.AddGoalContributionUseCase>(
@@ -243,6 +261,18 @@ extension GetItInjectableX on _i174.GetIt {
         _i502.SetMonthlyBudgetLimitUseCase(gh<_i1021.BudgetRepository>()));
     gh.lazySingleton<_i852.AuthLocalDataSource>(
         () => _i852.AuthLocalDataSourceImpl(gh<_i460.SharedPreferences>()));
+    gh.lazySingleton<_i425.BackupExportService>(() => _i425.BackupExportService(
+          transactionDataSource: gh<_i371.TransactionLocalDataSource>(),
+          accountDataSource: gh<_i688.AccountLocalDataSource>(),
+          categoryDataSource: gh<_i390.CategoryLocalDataSource>(),
+          budgetDataSource: gh<_i155.BudgetLocalDataSource>(),
+          goalDataSource: gh<_i692.GoalLocalDataSource>(),
+        ));
+    gh.factory<_i585.SettingsBloc>(() => _i585.SettingsBloc(
+          dataSource: gh<_i917.AppSettingsLocalDataSource>(),
+          securityService: gh<_i337.SecurityService>(),
+          backupExportService: gh<_i425.BackupExportService>(),
+        ));
     gh.lazySingleton<_i468.PostLocalDataSource>(
         () => _i468.PostLocalDataSourceImpl(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i932.NetworkInfo>(
@@ -290,6 +320,10 @@ extension GetItInjectableX on _i174.GetIt {
           remoteDataSource: gh<_i887.PostRemoteDataSource>(),
           localDataSource: gh<_i468.PostLocalDataSource>(),
           networkInfo: gh<_i932.NetworkInfo>(),
+        ));
+    gh.factory<_i1041.NotificationsBloc>(() => _i1041.NotificationsBloc(
+          dataSource: gh<_i156.NotificationSettingsLocalDataSource>(),
+          notificationService: gh<_i941.NotificationService>(),
         ));
     gh.factory<_i103.AccountsBloc>(() => _i103.AccountsBloc(
           getAccountsUseCase: gh<_i297.GetAccountsUseCase>(),

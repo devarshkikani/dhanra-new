@@ -1,9 +1,15 @@
+import 'package:dhanra_new/core/di/injection.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_spacing.dart';
 import 'package:dhanra_new/core/theme/app_typography.dart';
 import 'package:dhanra_new/core/widgets/widgets.dart';
+import 'package:dhanra_new/features/settings/domain/entities/app_settings_entity.dart';
+import 'package:dhanra_new/features/settings/presentation/bloc/settings_bloc.dart';
+import 'package:dhanra_new/features/settings/presentation/bloc/settings_event.dart';
+import 'package:dhanra_new/features/settings/presentation/bloc/settings_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -11,191 +17,248 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      appBar: const AppAppBar(
-        title: 'Settings & Configuration',
-      ),
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(
-            left: AppSpacing.md,
-            right: AppSpacing.md,
-            top: AppSpacing.xs,
-            bottom: 110,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. User Profile Header Card
-              AppCard(
-                variant: AppCardVariant.standard,
-                padding: AppSpacing.paddingMD,
-                child: Row(
+    return BlocProvider<SettingsBloc>(
+      create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
+      child: Scaffold(
+        backgroundColor: AppColors.darkBackground,
+        appBar: const AppAppBar(
+          title: 'Settings & Configuration',
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: BlocConsumer<SettingsBloc, SettingsState>(
+            listener: (context, state) {
+              if (state is SettingsLoadedState && state.successMessage != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.successMessage!),
+                    backgroundColor: AppColors.primary,
+                  ),
+                );
+              }
+            },
+            builder: (context, state) {
+              final currencySymbol =
+                  (state is SettingsLoadedState) ? state.settings.currencySymbol : '₹';
+              final currencyCode =
+                  (state is SettingsLoadedState) ? state.settings.currencyCode : 'INR';
+              final themeName =
+                  (state is SettingsLoadedState) ? state.settings.themePreference.displayName : 'Dark Mode';
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                  left: AppSpacing.md,
+                  right: AppSpacing.md,
+                  top: AppSpacing.xs,
+                  bottom: 110,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 52,
-                      height: 52,
-                      decoration: const BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          'DD',
-                          style: AppTypography.headlineSmall.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    AppSpacing.hGapMD,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    // 1. User Profile Header Card
+                    AppCard(
+                      variant: AppCardVariant.standard,
+                      padding: AppSpacing.paddingMD,
+                      child: Row(
                         children: [
-                          Text(
-                            'Don Daniel',
-                            style: AppTypography.titleLarge.copyWith(
-                              color: AppColors.textPrimary,
+                          Container(
+                            width: 52,
+                            height: 52,
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                'DD',
+                                style: AppTypography.headlineSmall.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                          AppSpacing.vGapXXS,
-                          Text(
-                            'don.daniel@dhanra.app',
-                            style: AppTypography.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
+                          AppSpacing.hGapMD,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Don Daniel',
+                                  style: AppTypography.titleLarge.copyWith(
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                AppSpacing.vGapXXS,
+                                Text(
+                                  'don.daniel@dhanra.app',
+                                  style: AppTypography.bodySmall.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'Pro Member',
+                              style: AppTypography.labelSmall.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.secondary,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(8),
+                    AppSpacing.vGapLG,
+
+                    // 2. Financial & Categorization Rules
+                    Text(
+                      'Preferences & Management',
+                      style: AppTypography.labelSmall.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: AppColors.textSecondary,
                       ),
-                      child: Text(
-                        'Pro Member',
-                        style: AppTypography.labelSmall.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.secondary,
-                        ),
+                    ),
+                    AppSpacing.vGapSM,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.category_rounded,
+                      color: AppColors.primary,
+                      title: 'Category Management',
+                      subtitle:
+                          'Manage income & expense categories, sub-categories, icons & colors',
+                      onTap: () => context.push(AppRoutes.categories),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.pie_chart_rounded,
+                      color: AppColors.secondary,
+                      title: 'Budget Limits & Warnings',
+                      subtitle:
+                          'Configure monthly category caps & warning thresholds',
+                      onTap: () => context.push(AppRoutes.budgets),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.savings_rounded,
+                      color: AppColors.credit,
+                      title: 'Savings Goals & Milestones',
+                      subtitle: 'Manage savings targets, deposit logs & deadlines',
+                      onTap: () => context.push(AppRoutes.goals),
+                    ),
+                    AppSpacing.vGapLG,
+
+                    // 3. System Preferences
+                    Text(
+                      'System & Appearance',
+                      style: AppTypography.labelSmall.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: AppColors.textSecondary,
                       ),
+                    ),
+                    AppSpacing.vGapSM,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.palette_rounded,
+                      color: AppColors.primary,
+                      title: 'Theme & Appearance',
+                      subtitle: 'Current: $themeName',
+                      onTap: () => context.push(AppRoutes.themeSettings),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.currency_exchange_rounded,
+                      color: AppColors.secondary,
+                      title: 'Primary Currency',
+                      subtitle: 'Selected: $currencyCode ($currencySymbol)',
+                      onTap: () => context.push(AppRoutes.currencySettings),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.lock_outline_rounded,
+                      color: AppColors.credit,
+                      title: 'Security & App Lock',
+                      subtitle: 'Configure secret PIN lock & biometric authentication',
+                      onTap: () => context.push(AppRoutes.securitySettings),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.notifications_none_rounded,
+                      color: AppColors.primary,
+                      title: 'Notifications & Alerts',
+                      subtitle:
+                          'Manage budget alerts, daily expense reminders & goal milestones',
+                      onTap: () => context.push(AppRoutes.notifications),
+                    ),
+                    AppSpacing.vGapLG,
+
+                    // 4. Data Storage & Backup
+                    Text(
+                      'Data Storage & Legal',
+                      style: AppTypography.labelSmall.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    AppSpacing.vGapSM,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.cloud_sync_rounded,
+                      color: AppColors.secondary,
+                      title: 'Backup & Restore Data',
+                      subtitle: 'Export encrypted JSON snapshot or restore database',
+                      onTap: () => context.push(AppRoutes.backupRestore),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.download_rounded,
+                      color: AppColors.credit,
+                      title: 'Export Transactions (CSV)',
+                      subtitle: 'Export transaction spreadsheet report',
+                      onTap: () => context
+                          .read<SettingsBloc>()
+                          .add(const ExportTransactionsCsvEvent()),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.info_outline_rounded,
+                      color: AppColors.accent,
+                      title: 'About & Legal',
+                      subtitle: 'App version v1.0.0, privacy policy, and licenses',
+                      onTap: () => context.push(AppRoutes.aboutPrivacy),
                     ),
                   ],
                 ),
-              ),
-              AppSpacing.vGapLG,
-
-              // 2. Preferences & Configuration
-              Text(
-                'Preferences & Management',
-                style: AppTypography.labelSmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              AppSpacing.vGapSM,
-
-              _buildSettingsTile(
-                context: context,
-                icon: Icons.category_rounded,
-                color: AppColors.primary,
-                title: 'Category Management',
-                subtitle:
-                    'Manage income & expense categories, sub-categories, icons & colors',
-                onTap: () => context.push(AppRoutes.categories),
-              ),
-              AppSpacing.vGapXS,
-
-              _buildSettingsTile(
-                context: context,
-                icon: Icons.pie_chart_rounded,
-                color: AppColors.secondary,
-                title: 'Budget Limits & Warnings',
-                subtitle:
-                    'Configure monthly category caps & warning thresholds',
-                onTap: () => context.push(AppRoutes.budgets),
-              ),
-              AppSpacing.vGapXS,
-
-              _buildSettingsTile(
-                context: context,
-                icon: Icons.savings_rounded,
-                color: AppColors.credit,
-                title: 'Savings Goals & Milestones',
-                subtitle: 'Manage savings targets, deposit logs & deadlines',
-                onTap: () => context.push(AppRoutes.goals),
-              ),
-              AppSpacing.vGapXS,
-
-              _buildSettingsTile(
-                context: context,
-                icon: Icons.auto_awesome_rounded,
-                color: AppColors.accent,
-                title: 'AI Financial Assistant',
-                subtitle:
-                    'Configure smart insight predictions & subscription detection',
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('AI Financial Assistant active'),
-                      backgroundColor: AppColors.primary,
-                    ),
-                  );
-                },
-              ),
-              AppSpacing.vGapLG,
-
-              // 3. App Settings
-              Text(
-                'App Settings & Security',
-                style: AppTypography.labelSmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              AppSpacing.vGapSM,
-
-              _buildSettingsTile(
-                context: context,
-                icon: Icons.lock_outline_rounded,
-                color: AppColors.credit,
-                title: 'Security & App Lock',
-                subtitle: 'Enable PIN lock and biometric authentication',
-                onTap: () {},
-              ),
-              AppSpacing.vGapXS,
-
-              _buildSettingsTile(
-                context: context,
-                icon: Icons.notifications_none_rounded,
-                color: AppColors.primary,
-                title: 'Notifications & Alerts',
-                subtitle:
-                    'Bill payment reminders & budget alert notifications',
-                onTap: () {},
-              ),
-              AppSpacing.vGapXS,
-
-              _buildSettingsTile(
-                context: context,
-                icon: Icons.download_rounded,
-                color: AppColors.secondary,
-                title: 'Export Financial Data',
-                subtitle:
-                    'Export transactions and accounts as CSV or PDF report',
-                onTap: () {},
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

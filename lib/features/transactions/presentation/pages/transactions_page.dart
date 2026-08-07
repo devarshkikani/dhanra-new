@@ -86,19 +86,23 @@ class _TransactionsView extends StatelessWidget {
         title: 'Transactions',
         actions: [
           IconButton(
-            icon: const Icon(Icons.tune_rounded, color: AppColors.textSecondary),
+            icon:
+                const Icon(Icons.tune_rounded, color: AppColors.textSecondary),
             tooltip: 'Manage Categories',
             onPressed: () => context.push(AppRoutes.categories),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddEditDialog(context),
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: Text(
-          'Add Tx',
-          style: AppTypography.labelLarge.copyWith(color: Colors.white),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 100),
+        child: FloatingActionButton.extended(
+          onPressed: () => _showAddEditDialog(context),
+          backgroundColor: AppColors.primary,
+          icon: const Icon(Icons.add_rounded, color: Colors.white),
+          label: Text(
+            'Add Tx',
+            style: AppTypography.labelLarge.copyWith(color: Colors.white),
+          ),
         ),
       ),
       body: SafeArea(
@@ -145,33 +149,41 @@ class _TransactionsView extends StatelessWidget {
                               AppChip(
                                 label: 'All',
                                 isSelected: state.selectedFilter == 'ALL',
-                                onTap: () => context.read<TransactionsBloc>().add(
-                                      const TransactionTypeFilterChangedEvent('ALL'),
-                                    ),
+                                onTap: () =>
+                                    context.read<TransactionsBloc>().add(
+                                          const TransactionTypeFilterChangedEvent(
+                                              'ALL'),
+                                        ),
                               ),
                               AppSpacing.hGapXS,
                               AppChip(
                                 label: 'Expenses',
                                 isSelected: state.selectedFilter == 'EXPENSE',
-                                onTap: () => context.read<TransactionsBloc>().add(
-                                      const TransactionTypeFilterChangedEvent('EXPENSE'),
-                                    ),
+                                onTap: () =>
+                                    context.read<TransactionsBloc>().add(
+                                          const TransactionTypeFilterChangedEvent(
+                                              'EXPENSE'),
+                                        ),
                               ),
                               AppSpacing.hGapXS,
                               AppChip(
                                 label: 'Income',
                                 isSelected: state.selectedFilter == 'INCOME',
-                                onTap: () => context.read<TransactionsBloc>().add(
-                                      const TransactionTypeFilterChangedEvent('INCOME'),
-                                    ),
+                                onTap: () =>
+                                    context.read<TransactionsBloc>().add(
+                                          const TransactionTypeFilterChangedEvent(
+                                              'INCOME'),
+                                        ),
                               ),
                               AppSpacing.hGapXS,
                               AppChip(
                                 label: 'Transfers',
                                 isSelected: state.selectedFilter == 'TRANSFER',
-                                onTap: () => context.read<TransactionsBloc>().add(
-                                      const TransactionTypeFilterChangedEvent('TRANSFER'),
-                                    ),
+                                onTap: () =>
+                                    context.read<TransactionsBloc>().add(
+                                          const TransactionTypeFilterChangedEvent(
+                                              'TRANSFER'),
+                                        ),
                               ),
                             ],
                           ),
@@ -195,7 +207,8 @@ class _TransactionsView extends StatelessWidget {
                           if (grouped.isEmpty) ...[
                             const AppEmptyState(
                               title: 'No Transactions',
-                              message: 'No transactions found matching your search.',
+                              message:
+                                  'No transactions found matching your search.',
                             ),
                           ] else ...[
                             ...grouped.entries.map((entry) {

@@ -106,12 +106,15 @@ class _BudgetsView extends StatelessWidget {
         backgroundColor: AppColors.darkBackground,
         elevation: 0,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddEditBudgetDialog(context),
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: const Text('Add Cap',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 75.0),
+        child: FloatingActionButton.extended(
+          onPressed: () => _showAddEditBudgetDialog(context),
+          backgroundColor: AppColors.primary,
+          icon: const Icon(Icons.add_rounded, color: Colors.white),
+          label: const Text('Add Cap',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
       ),
       body: Container(
         decoration: const BoxDecoration(

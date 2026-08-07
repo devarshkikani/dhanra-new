@@ -7,6 +7,16 @@ import 'package:dhanra_new/features/auth/presentation/pages/onboarding_page.dart
 import 'package:dhanra_new/features/auth/presentation/pages/otp_verification_page.dart';
 import 'package:dhanra_new/features/auth/presentation/pages/register_page.dart';
 import 'package:dhanra_new/features/auth/presentation/pages/splash_page.dart';
+import 'package:dhanra_new/features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'package:dhanra_new/features/notifications/presentation/bloc/notifications_event.dart';
+import 'package:dhanra_new/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:dhanra_new/features/settings/presentation/bloc/settings_bloc.dart';
+import 'package:dhanra_new/features/settings/presentation/bloc/settings_event.dart';
+import 'package:dhanra_new/features/settings/presentation/pages/about_privacy_page.dart';
+import 'package:dhanra_new/features/settings/presentation/pages/backup_restore_page.dart';
+import 'package:dhanra_new/features/settings/presentation/pages/currency_settings_page.dart';
+import 'package:dhanra_new/features/settings/presentation/pages/security_settings_page.dart';
+import 'package:dhanra_new/features/settings/presentation/pages/theme_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -32,6 +42,12 @@ abstract class AppRoutes {
   static const String budgets = '/budgets';
   static const String analytics = '/analytics';
   static const String goals = '/goals';
+  static const String notifications = '/notifications';
+  static const String themeSettings = '/theme-settings';
+  static const String currencySettings = '/currency-settings';
+  static const String securitySettings = '/security-settings';
+  static const String backupRestore = '/backup-restore';
+  static const String aboutPrivacy = '/about-privacy';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -109,6 +125,45 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.goals,
       builder: (context, state) => const GoalsPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.notifications,
+      builder: (context, state) => BlocProvider<NotificationsBloc>(
+        create: (_) => getIt<NotificationsBloc>()..add(const LoadNotificationSettingsEvent()),
+        child: const NotificationsPage(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.themeSettings,
+      builder: (context, state) => BlocProvider<SettingsBloc>(
+        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
+        child: const ThemeSettingsPage(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.currencySettings,
+      builder: (context, state) => BlocProvider<SettingsBloc>(
+        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
+        child: const CurrencySettingsPage(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.securitySettings,
+      builder: (context, state) => BlocProvider<SettingsBloc>(
+        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
+        child: const SecuritySettingsPage(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.backupRestore,
+      builder: (context, state) => BlocProvider<SettingsBloc>(
+        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
+        child: const BackupRestorePage(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.aboutPrivacy,
+      builder: (context, state) => const AboutPrivacyPage(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

@@ -6,6 +6,7 @@ export 'app_card.dart';
 export 'app_chip.dart';
 export 'app_dialog.dart';
 export 'app_empty_state.dart';
+export 'app_error_boundary.dart';
 export 'app_error_state.dart';
 export 'app_list_tile.dart';
 export 'app_loading.dart';
