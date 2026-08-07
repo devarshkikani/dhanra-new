@@ -134,15 +134,7 @@ class SettingsPage extends StatelessWidget {
                   title: 'Budget Limits & Warnings',
                   subtitle:
                       'Configure monthly category caps & warning thresholds',
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text('Budget Management feature coming in Phase 6'),
-                        backgroundColor: AppColors.primary,
-                      ),
-                    );
-                  },
+                  onTap: () => context.push(AppRoutes.budgets),
                 ),
                 const SizedBox(height: 10),
 

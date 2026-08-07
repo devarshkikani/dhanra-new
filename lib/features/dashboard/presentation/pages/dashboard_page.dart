@@ -139,9 +139,12 @@ class _DashboardView extends StatelessWidget {
                         const SizedBox(height: 24),
 
                         // 4. Monthly Budget Progress Card
-                        BudgetOverviewCard(
-                          spentAmount: summary.budgetSpentAmount,
-                          totalLimit: summary.budgetTotalLimit,
+                        GestureDetector(
+                          onTap: () => context.push(AppRoutes.budgets),
+                          child: BudgetOverviewCard(
+                            spentAmount: summary.budgetSpentAmount,
+                            totalLimit: summary.budgetTotalLimit,
+                          ),
                         ),
                         const SizedBox(height: 18),
 

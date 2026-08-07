@@ -12,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:dhanra_new/features/accounts/presentation/pages/accounts_page.dart';
+import 'package:dhanra_new/features/analytics/presentation/pages/analytics_page.dart';
+import 'package:dhanra_new/features/budgets/presentation/pages/budgets_page.dart';
 import 'package:dhanra_new/features/categories/presentation/pages/categories_page.dart';
 import 'package:dhanra_new/features/transactions/presentation/pages/transactions_page.dart';
 
@@ -26,6 +28,8 @@ abstract class AppRoutes {
   static const String transactions = '/transactions';
   static const String accounts = '/accounts';
   static const String categories = '/categories';
+  static const String budgets = '/budgets';
+  static const String analytics = '/analytics';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -91,6 +95,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.categories,
       builder: (context, state) => const CategoriesPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.budgets,
+      builder: (context, state) => const BudgetsPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.analytics,
+      builder: (context, state) => const AnalyticsPage(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

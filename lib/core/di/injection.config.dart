@@ -34,6 +34,15 @@ import '../../features/accounts/domain/usecases/transfer_funds_usecase.dart'
 import '../../features/accounts/domain/usecases/update_account_usecase.dart'
     as _i927;
 import '../../features/accounts/presentation/bloc/accounts_bloc.dart' as _i103;
+import '../../features/analytics/data/datasources/analytics_local_data_source.dart'
+    as _i292;
+import '../../features/analytics/data/repositories/analytics_repository_impl.dart'
+    as _i425;
+import '../../features/analytics/domain/repositories/analytics_repository.dart'
+    as _i1044;
+import '../../features/analytics/domain/usecases/get_analytics_data_usecase.dart'
+    as _i405;
+import '../../features/analytics/presentation/bloc/analytics_bloc.dart' as _i70;
 import '../../features/auth/data/datasources/auth_local_data_source.dart'
     as _i852;
 import '../../features/auth/data/datasources/auth_remote_data_source.dart'
@@ -56,6 +65,21 @@ import '../../features/auth/domain/usecases/sign_up_with_email_usecase.dart'
 import '../../features/auth/domain/usecases/verify_phone_otp_usecase.dart'
     as _i1042;
 import '../../features/auth/presentation/bloc/auth_bloc.dart' as _i797;
+import '../../features/budgets/data/datasources/budget_local_data_source.dart'
+    as _i155;
+import '../../features/budgets/data/repositories/budget_repository_impl.dart'
+    as _i654;
+import '../../features/budgets/domain/repositories/budget_repository.dart'
+    as _i1021;
+import '../../features/budgets/domain/usecases/delete_category_budget_usecase.dart'
+    as _i279;
+import '../../features/budgets/domain/usecases/get_monthly_budget_summary_usecase.dart'
+    as _i1001;
+import '../../features/budgets/domain/usecases/save_category_budget_usecase.dart'
+    as _i258;
+import '../../features/budgets/domain/usecases/set_monthly_budget_limit_usecase.dart'
+    as _i502;
+import '../../features/budgets/presentation/bloc/budgets_bloc.dart' as _i120;
 import '../../features/categories/data/datasources/category_local_data_source.dart'
     as _i390;
 import '../../features/categories/data/repositories/category_repository_impl.dart'
@@ -149,8 +173,12 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i688.AccountLocalDataSource>(),
               gh<_i838.DashboardLocalDataSource>(),
             ));
+    gh.lazySingleton<_i292.AnalyticsLocalDataSource>(
+        () => _i292.AnalyticsLocalDataSourceImpl());
     gh.lazySingleton<_i390.CategoryLocalDataSource>(
         () => _i390.CategoryLocalDataSourceImpl());
+    gh.lazySingleton<_i155.BudgetLocalDataSource>(
+        () => _i155.BudgetLocalDataSourceImpl());
     gh.lazySingleton<_i107.AuthRemoteDataSource>(
         () => _i107.AuthRemoteDataSourceImpl(
               gh<_i59.FirebaseAuth>(),
@@ -168,8 +196,21 @@ extension GetItInjectableX on _i174.GetIt {
         _i509.DashboardRepositoryImpl(gh<_i838.DashboardLocalDataSource>()));
     gh.lazySingleton<_i266.CategoryRepository>(() =>
         _i894.CategoryRepositoryImpl(gh<_i390.CategoryLocalDataSource>()));
+    gh.lazySingleton<_i1021.BudgetRepository>(() => _i654.BudgetRepositoryImpl(
+          gh<_i155.BudgetLocalDataSource>(),
+          gh<_i371.TransactionLocalDataSource>(),
+          gh<_i838.DashboardLocalDataSource>(),
+        ));
     gh.lazySingleton<_i1062.GetDashboardSummaryUseCase>(() =>
         _i1062.GetDashboardSummaryUseCase(gh<_i665.DashboardRepository>()));
+    gh.lazySingleton<_i279.DeleteCategoryBudgetUseCase>(
+        () => _i279.DeleteCategoryBudgetUseCase(gh<_i1021.BudgetRepository>()));
+    gh.lazySingleton<_i1001.GetMonthlyBudgetSummaryUseCase>(() =>
+        _i1001.GetMonthlyBudgetSummaryUseCase(gh<_i1021.BudgetRepository>()));
+    gh.lazySingleton<_i258.SaveCategoryBudgetUseCase>(
+        () => _i258.SaveCategoryBudgetUseCase(gh<_i1021.BudgetRepository>()));
+    gh.lazySingleton<_i502.SetMonthlyBudgetLimitUseCase>(() =>
+        _i502.SetMonthlyBudgetLimitUseCase(gh<_i1021.BudgetRepository>()));
     gh.lazySingleton<_i852.AuthLocalDataSource>(
         () => _i852.AuthLocalDataSourceImpl(gh<_i460.SharedPreferences>()));
     gh.lazySingleton<_i468.PostLocalDataSource>(
@@ -179,6 +220,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i706.AccountRepository>(() => _i126.AccountRepositoryImpl(
           gh<_i688.AccountLocalDataSource>(),
           gh<_i838.DashboardLocalDataSource>(),
+        ));
+    gh.factory<_i120.BudgetsBloc>(() => _i120.BudgetsBloc(
+          getMonthlyBudgetSummaryUseCase:
+              gh<_i1001.GetMonthlyBudgetSummaryUseCase>(),
+          setMonthlyBudgetLimitUseCase:
+              gh<_i502.SetMonthlyBudgetLimitUseCase>(),
+          saveCategoryBudgetUseCase: gh<_i258.SaveCategoryBudgetUseCase>(),
+          deleteCategoryBudgetUseCase: gh<_i279.DeleteCategoryBudgetUseCase>(),
         ));
     gh.factory<_i652.DashboardBloc>(
         () => _i652.DashboardBloc(gh<_i1062.GetDashboardSummaryUseCase>()));
@@ -192,6 +241,11 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i107.AuthRemoteDataSource>(),
           gh<_i852.AuthLocalDataSource>(),
         ));
+    gh.lazySingleton<_i1044.AnalyticsRepository>(
+        () => _i425.AnalyticsRepositoryImpl(
+              gh<_i292.AnalyticsLocalDataSource>(),
+              gh<_i371.TransactionLocalDataSource>(),
+            ));
     gh.lazySingleton<_i126.CreateAccountUseCase>(
         () => _i126.CreateAccountUseCase(gh<_i706.AccountRepository>()));
     gh.lazySingleton<_i1063.DeleteAccountUseCase>(
@@ -236,6 +290,10 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i254.SignUpWithEmailUseCase(gh<_i589.IAuthRepository>()));
     gh.lazySingleton<_i1042.VerifyPhoneOtpUseCase>(
         () => _i1042.VerifyPhoneOtpUseCase(gh<_i589.IAuthRepository>()));
+    gh.lazySingleton<_i405.GetAnalyticsDataUseCase>(
+        () => _i405.GetAnalyticsDataUseCase(gh<_i1044.AnalyticsRepository>()));
+    gh.factory<_i70.AnalyticsBloc>(() => _i70.AnalyticsBloc(
+        getAnalyticsDataUseCase: gh<_i405.GetAnalyticsDataUseCase>()));
     gh.factory<_i797.AuthBloc>(() => _i797.AuthBloc(
           getCurrentUserUseCase: gh<_i17.GetCurrentUserUseCase>(),
           signInWithEmailUseCase: gh<_i744.SignInWithEmailUseCase>(),
