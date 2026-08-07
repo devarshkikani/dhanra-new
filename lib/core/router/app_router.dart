@@ -15,6 +15,7 @@ import 'package:dhanra_new/features/accounts/presentation/pages/accounts_page.da
 import 'package:dhanra_new/features/analytics/presentation/pages/analytics_page.dart';
 import 'package:dhanra_new/features/budgets/presentation/pages/budgets_page.dart';
 import 'package:dhanra_new/features/categories/presentation/pages/categories_page.dart';
+import 'package:dhanra_new/features/goals/presentation/pages/goals_page.dart';
 import 'package:dhanra_new/features/transactions/presentation/pages/transactions_page.dart';
 
 abstract class AppRoutes {
@@ -30,6 +31,7 @@ abstract class AppRoutes {
   static const String categories = '/categories';
   static const String budgets = '/budgets';
   static const String analytics = '/analytics';
+  static const String goals = '/goals';
 }
 
 final GoRouter appRouter = GoRouter(
@@ -103,6 +105,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.analytics,
       builder: (context, state) => const AnalyticsPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.goals,
+      builder: (context, state) => const GoalsPage(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

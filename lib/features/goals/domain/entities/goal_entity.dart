@@ -23,13 +23,17 @@ class GoalEntity extends Equatable {
   final bool isCompleted;
   final DateTime? createdAt;
 
-  double get remainingAmount => (targetAmount - currentAmount).clamp(0.0, double.infinity);
-  double get percentageSaved => targetAmount > 0 ? (currentAmount / targetAmount).clamp(0.0, 1.0) : 0.0;
+  double get remainingAmount =>
+      (targetAmount - currentAmount).clamp(0.0, double.infinity);
+  double get percentageSaved =>
+      targetAmount > 0 ? (currentAmount / targetAmount).clamp(0.0, 1.0) : 0.0;
 
   double get suggestedMonthlyContribution {
     if (isCompleted || remainingAmount <= 0) return 0.0;
     final now = DateTime.now();
-    final monthsLeft = ((deadline.year - now.year) * 12 + (deadline.month - now.month)).clamp(1, 120);
+    final monthsLeft =
+        ((deadline.year - now.year) * 12 + (deadline.month - now.month))
+            .clamp(1, 120);
     return remainingAmount / monthsLeft;
   }
 

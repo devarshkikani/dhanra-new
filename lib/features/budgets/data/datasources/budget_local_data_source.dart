@@ -14,55 +14,12 @@ abstract class BudgetLocalDataSource {
 
 @LazySingleton(as: BudgetLocalDataSource)
 class BudgetLocalDataSourceImpl implements BudgetLocalDataSource {
-  BudgetLocalDataSourceImpl() {
-    _initSeedBudgets();
-  }
+  BudgetLocalDataSourceImpl();
 
-  double _totalMonthlyLimit = 60000.0;
+  double _totalMonthlyLimit = 0.0;
   final List<BudgetModel> _budgets = [];
   final StreamController<List<BudgetModel>> _controller =
       StreamController<List<BudgetModel>>.broadcast();
-
-  void _initSeedBudgets() {
-    _budgets.addAll([
-      const BudgetModel(
-        id: 'b_1',
-        categoryId: 'cat_food',
-        categoryName: 'Food & Dining',
-        categoryIcon: 'coffee',
-        categoryColor: '#9B5DE5',
-        limitAmount: 10000,
-        spentAmount: 450,
-      ),
-      const BudgetModel(
-        id: 'b_2',
-        categoryId: 'cat_shopping',
-        categoryName: 'Shopping',
-        categoryIcon: 'shopping_bag',
-        categoryColor: '#FFA500',
-        limitAmount: 15000,
-        spentAmount: 24900, // Exceeded seed
-      ),
-      const BudgetModel(
-        id: 'b_3',
-        categoryId: 'cat_groceries',
-        categoryName: 'Groceries',
-        categoryIcon: 'local_grocery_store',
-        categoryColor: '#00F5D4',
-        limitAmount: 8000,
-        spentAmount: 3200,
-      ),
-      const BudgetModel(
-        id: 'b_4',
-        categoryId: 'cat_entertainment',
-        categoryName: 'Entertainment',
-        categoryIcon: 'movie',
-        categoryColor: '#E91E63',
-        limitAmount: 5000,
-        spentAmount: 0,
-      ),
-    ]);
-  }
 
   void _notifyListeners() {
     _controller.add(List.unmodifiable(_budgets));

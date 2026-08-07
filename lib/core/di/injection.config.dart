@@ -106,6 +106,19 @@ import '../../features/dashboard/domain/usecases/get_dashboard_summary_usecase.d
     as _i1062;
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart'
     as _i652;
+import '../../features/goals/data/datasources/goal_local_data_source.dart'
+    as _i692;
+import '../../features/goals/data/repositories/goal_repository_impl.dart'
+    as _i942;
+import '../../features/goals/domain/repositories/goal_repository.dart' as _i112;
+import '../../features/goals/domain/usecases/add_goal_contribution_usecase.dart'
+    as _i521;
+import '../../features/goals/domain/usecases/create_goal_usecase.dart' as _i353;
+import '../../features/goals/domain/usecases/delete_goal_usecase.dart' as _i70;
+import '../../features/goals/domain/usecases/get_goals_summary_usecase.dart'
+    as _i1027;
+import '../../features/goals/domain/usecases/update_goal_usecase.dart' as _i929;
+import '../../features/goals/presentation/bloc/goals_bloc.dart' as _i157;
 import '../../features/sample_feature/data/datasources/post_local_datasource.dart'
     as _i468;
 import '../../features/sample_feature/data/datasources/post_remote_datasource.dart'
@@ -184,6 +197,8 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i59.FirebaseAuth>(),
               gh<_i974.FirebaseFirestore>(),
             ));
+    gh.lazySingleton<_i692.GoalLocalDataSource>(
+        () => _i692.GoalLocalDataSourceImpl());
     gh.lazySingleton<_i860.CreateTransactionUseCase>(() =>
         _i860.CreateTransactionUseCase(gh<_i421.TransactionRepository>()));
     gh.lazySingleton<_i623.DeleteTransactionUseCase>(() =>
@@ -192,6 +207,11 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i974.GetTransactionsUseCase(gh<_i421.TransactionRepository>()));
     gh.lazySingleton<_i39.UpdateTransactionUseCase>(
         () => _i39.UpdateTransactionUseCase(gh<_i421.TransactionRepository>()));
+    gh.lazySingleton<_i112.GoalRepository>(() => _i942.GoalRepositoryImpl(
+          gh<_i692.GoalLocalDataSource>(),
+          gh<_i688.AccountLocalDataSource>(),
+          gh<_i838.DashboardLocalDataSource>(),
+        ));
     gh.lazySingleton<_i665.DashboardRepository>(() =>
         _i509.DashboardRepositoryImpl(gh<_i838.DashboardLocalDataSource>()));
     gh.lazySingleton<_i266.CategoryRepository>(() =>
@@ -203,6 +223,16 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.lazySingleton<_i1062.GetDashboardSummaryUseCase>(() =>
         _i1062.GetDashboardSummaryUseCase(gh<_i665.DashboardRepository>()));
+    gh.lazySingleton<_i521.AddGoalContributionUseCase>(
+        () => _i521.AddGoalContributionUseCase(gh<_i112.GoalRepository>()));
+    gh.lazySingleton<_i353.CreateGoalUseCase>(
+        () => _i353.CreateGoalUseCase(gh<_i112.GoalRepository>()));
+    gh.lazySingleton<_i70.DeleteGoalUseCase>(
+        () => _i70.DeleteGoalUseCase(gh<_i112.GoalRepository>()));
+    gh.lazySingleton<_i1027.GetGoalsSummaryUseCase>(
+        () => _i1027.GetGoalsSummaryUseCase(gh<_i112.GoalRepository>()));
+    gh.lazySingleton<_i929.UpdateGoalUseCase>(
+        () => _i929.UpdateGoalUseCase(gh<_i112.GoalRepository>()));
     gh.lazySingleton<_i279.DeleteCategoryBudgetUseCase>(
         () => _i279.DeleteCategoryBudgetUseCase(gh<_i1021.BudgetRepository>()));
     gh.lazySingleton<_i1001.GetMonthlyBudgetSummaryUseCase>(() =>
@@ -267,6 +297,13 @@ extension GetItInjectableX on _i174.GetIt {
           updateAccountUseCase: gh<_i927.UpdateAccountUseCase>(),
           deleteAccountUseCase: gh<_i1063.DeleteAccountUseCase>(),
           transferFundsUseCase: gh<_i248.TransferFundsUseCase>(),
+        ));
+    gh.factory<_i157.GoalsBloc>(() => _i157.GoalsBloc(
+          getGoalsSummaryUseCase: gh<_i1027.GetGoalsSummaryUseCase>(),
+          createGoalUseCase: gh<_i353.CreateGoalUseCase>(),
+          updateGoalUseCase: gh<_i929.UpdateGoalUseCase>(),
+          deleteGoalUseCase: gh<_i70.DeleteGoalUseCase>(),
+          addGoalContributionUseCase: gh<_i521.AddGoalContributionUseCase>(),
         ));
     gh.lazySingleton<_i431.CreateCategoryUseCase>(
         () => _i431.CreateCategoryUseCase(gh<_i266.CategoryRepository>()));

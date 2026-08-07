@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:dhanra_new/features/accounts/data/models/account_model.dart';
-import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
+
 import 'package:injectable/injectable.dart';
 
 abstract class AccountLocalDataSource {
@@ -18,49 +18,11 @@ abstract class AccountLocalDataSource {
 
 @LazySingleton(as: AccountLocalDataSource)
 class AccountLocalDataSourceImpl implements AccountLocalDataSource {
-  AccountLocalDataSourceImpl() {
-    _initSeedAccounts();
-  }
+  AccountLocalDataSourceImpl();
 
   final List<AccountModel> _accounts = [];
   final StreamController<List<AccountModel>> _controller =
       StreamController<List<AccountModel>>.broadcast();
-
-  void _initSeedAccounts() {
-    _accounts.addAll([
-      AccountModel(
-        id: 'acc_1',
-        name: 'HDFC Salary Account',
-        type: AccountType.bank,
-        balance: 75000,
-        currency: 'INR',
-        colorHex: '#9B5DE5',
-        iconName: 'account_balance',
-        accountNumberLast4: '4321',
-        createdAt: DateTime.now().subtract(const Duration(days: 30)),
-      ),
-      AccountModel(
-        id: 'acc_2',
-        name: 'Paytm Wallet',
-        type: AccountType.wallet,
-        balance: 4550,
-        currency: 'INR',
-        colorHex: '#00F5D4',
-        iconName: 'account_balance_wallet',
-        createdAt: DateTime.now().subtract(const Duration(days: 20)),
-      ),
-      AccountModel(
-        id: 'acc_3',
-        name: 'Pocket Cash',
-        type: AccountType.cash,
-        balance: 5000,
-        currency: 'INR',
-        colorHex: '#FFA500',
-        iconName: 'payments',
-        createdAt: DateTime.now().subtract(const Duration(days: 10)),
-      ),
-    ]);
-  }
 
   void _notifyListeners() {
     _controller.add(List.unmodifiable(_accounts));

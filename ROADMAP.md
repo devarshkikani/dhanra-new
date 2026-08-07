@@ -30,7 +30,7 @@ Build the Dhanra Flutter application module-by-module using a scalable architect
 * ✅ Phase 5 – Transactions
 * ✅ Phase 6 – Budget Management
 * ✅ Phase 7 – Analytics
-* ⬜ Phase 8 – Goals
+* ✅ Phase 8 – Goals
 * ⬜ Phase 9 – Bills & Recurring Transactions
 * ⬜ Phase 10 – Calendar & History
 * ⬜ Phase 11 – Notifications
