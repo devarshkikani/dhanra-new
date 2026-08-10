@@ -3,7 +3,10 @@ import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_spacing.dart';
 import 'package:dhanra_new/core/theme/app_typography.dart';
 import 'package:dhanra_new/core/widgets/widgets.dart';
+import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
+import 'package:dhanra_new/features/accounts/domain/usecases/create_account_usecase.dart';
 import 'package:dhanra_new/features/accounts/domain/usecases/get_accounts_usecase.dart';
+import 'package:dhanra_new/features/accounts/presentation/widgets/add_edit_account_dialog.dart';
 import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_bloc.dart';
@@ -43,6 +46,68 @@ class _TransactionsView extends StatelessWidget {
 
     if (!context.mounted) return;
 
+    // Guardrail: If user has zero accounts, prompt Add Account first!
+    if (accounts.isEmpty) {
+      final shouldCreate = await showDialog<bool>(
+        context: context,
+        builder: (dialogCtx) => AlertDialog(
+          backgroundColor: AppColors.darkCard,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            'Account Required',
+            style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
+          ),
+          content: Text(
+            'You need to create at least one account (e.g. Bank Account, Cash, or Credit Card) before logging transactions.',
+            style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogCtx).pop(false),
+              child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            ),
+            AppButton(
+              title: '+ Add Account Now',
+              height: 40,
+              width: 160,
+              onPressed: () => Navigator.of(dialogCtx).pop(true),
+            ),
+          ],
+        ),
+      );
+
+      if (shouldCreate == true && context.mounted) {
+        final newAccount = await showModalBottomSheet<AccountEntity>(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (_) => const AddEditAccountDialog(),
+        );
+
+        if (newAccount != null && context.mounted) {
+          await getIt<CreateAccountUseCase>().call(newAccount);
+          final updatedAccounts = await getIt<GetAccountsUseCase>().call();
+          if (!context.mounted || updatedAccounts.isEmpty) return;
+
+          final result = await showModalBottomSheet<TransactionEntity>(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (_) => AddEditTransactionDialog(
+              transaction: transaction,
+              accounts: updatedAccounts,
+              categories: categories,
+            ),
+          );
+
+          if (result != null && context.mounted) {
+            bloc.add(CreateTransactionRequestedEvent(result));
+          }
+        }
+      }
+      return;
+    }
+
     final result = await showModalBottomSheet<TransactionEntity>(
       context: context,
       isScrollControlled: true,
@@ -54,7 +119,7 @@ class _TransactionsView extends StatelessWidget {
       ),
     );
 
-    if (result != null) {
+    if (result != null && context.mounted) {
       if (transaction == null) {
         bloc.add(CreateTransactionRequestedEvent(result));
       } else {
@@ -128,123 +193,119 @@ class _TransactionsView extends StatelessWidget {
 
               return Column(
                 children: [
-                  // 1. Search Bar & Type Filter Chips
+                  // 1. Search Bar
                   Padding(
-                    padding: AppSpacing.paddingHorizontalMD,
-                    child: Column(
-                      children: [
-                        AppSearchBar(
-                          hint: 'Search transactions or notes...',
-                          onChanged: (val) {
-                            context
-                                .read<TransactionsBloc>()
-                                .add(TransactionSearchQueryChangedEvent(val));
-                          },
-                        ),
-                        AppSpacing.vGapSM,
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              AppChip(
-                                label: 'All',
-                                isSelected: state.selectedFilter == 'ALL',
-                                onTap: () =>
-                                    context.read<TransactionsBloc>().add(
-                                          const TransactionTypeFilterChangedEvent(
-                                              'ALL'),
-                                        ),
-                              ),
-                              AppSpacing.hGapXS,
-                              AppChip(
-                                label: 'Expenses',
-                                isSelected: state.selectedFilter == 'EXPENSE',
-                                onTap: () =>
-                                    context.read<TransactionsBloc>().add(
-                                          const TransactionTypeFilterChangedEvent(
-                                              'EXPENSE'),
-                                        ),
-                              ),
-                              AppSpacing.hGapXS,
-                              AppChip(
-                                label: 'Income',
-                                isSelected: state.selectedFilter == 'INCOME',
-                                onTap: () =>
-                                    context.read<TransactionsBloc>().add(
-                                          const TransactionTypeFilterChangedEvent(
-                                              'INCOME'),
-                                        ),
-                              ),
-                              AppSpacing.hGapXS,
-                              AppChip(
-                                label: 'Transfers',
-                                isSelected: state.selectedFilter == 'TRANSFER',
-                                onTap: () =>
-                                    context.read<TransactionsBloc>().add(
-                                          const TransactionTypeFilterChangedEvent(
-                                              'TRANSFER'),
-                                        ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        AppSpacing.vGapMD,
-                      ],
+                    padding: AppSpacing.paddingMD,
+                    child: AppSearchBar(
+                      hint: 'Search title, category or notes...',
+                      onChanged: (query) {
+                        context.read<TransactionsBloc>().add(
+                              TransactionSearchQueryChangedEvent(query),
+                            );
+                      },
                     ),
                   ),
 
-                  // 2. Grouped Date Feed List
+                  // 2. Type Filter Chips
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                    ),
+                    child: Row(
+                      children: [
+                        AppChip(
+                          label: 'All',
+                          isSelected: state.selectedFilter == 'ALL',
+                          onTap: () => context.read<TransactionsBloc>().add(
+                                const TransactionTypeFilterChangedEvent('ALL'),
+                              ),
+                        ),
+                        AppSpacing.hGapXS,
+                        AppChip(
+                          label: 'Expense',
+                          isSelected: state.selectedFilter == 'EXPENSE',
+                          onTap: () => context.read<TransactionsBloc>().add(
+                                const TransactionTypeFilterChangedEvent(
+                                    'EXPENSE'),
+                              ),
+                        ),
+                        AppSpacing.hGapXS,
+                        AppChip(
+                          label: 'Income',
+                          isSelected: state.selectedFilter == 'INCOME',
+                          onTap: () => context.read<TransactionsBloc>().add(
+                                const TransactionTypeFilterChangedEvent(
+                                    'INCOME'),
+                              ),
+                        ),
+                        AppSpacing.hGapXS,
+                        AppChip(
+                          label: 'Transfer',
+                          isSelected: state.selectedFilter == 'TRANSFER',
+                          onTap: () => context.read<TransactionsBloc>().add(
+                                const TransactionTypeFilterChangedEvent(
+                                    'TRANSFER'),
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AppSpacing.vGapMD,
+
+                  // 3. Transactions Grouped List
                   Expanded(
-                    child: SingleChildScrollView(
+                    child: ListView(
                       padding: const EdgeInsets.only(
                         left: AppSpacing.md,
                         right: AppSpacing.md,
-                        bottom: 110,
+                        bottom: 120,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (grouped.isEmpty) ...[
-                            const AppEmptyState(
-                              title: 'No Transactions',
-                              message:
-                                  'No transactions found matching your search.',
-                            ),
-                          ] else ...[
-                            ...grouped.entries.map((entry) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: AppSpacing.paddingVerticalXS,
-                                    child: Text(
-                                      entry.key,
-                                      style: AppTypography.labelSmall.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.textSecondary,
-                                        letterSpacing: 0.8,
-                                      ),
+                      children: [
+                        if (grouped.isEmpty) ...[
+                          const AppEmptyState(
+                            title: 'No Transactions',
+                            message:
+                                'No transactions found matching your search.',
+                          ),
+                        ] else ...[
+                          ...grouped.entries.map((entry) {
+                            final dateHeader = entry.key;
+                            final list = entry.value;
+
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: AppSpacing.xs,
+                                  ),
+                                  child: Text(
+                                    dateHeader,
+                                    style: AppTypography.labelSmall.copyWith(
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.5,
                                     ),
                                   ),
-                                  ...entry.value.map(
-                                    (tx) => TransactionItemCard(
+                                ),
+                                ...list.map(
+                                  (tx) => TransactionItemCard(
+                                    transaction: tx,
+                                    onEdit: () => _showAddEditDialog(
+                                      context,
                                       transaction: tx,
-                                      onEdit: () => _showAddEditDialog(
-                                        context,
-                                        transaction: tx,
-                                      ),
-                                      onDelete: () => _confirmDelete(
-                                        context,
-                                        tx,
-                                      ),
                                     ),
+                                    onDelete: () =>
+                                        _confirmDelete(context, tx),
                                   ),
-                                ],
-                              );
-                            }),
-                          ],
+                                ),
+                                AppSpacing.vGapSM,
+                              ],
+                            );
+                          }),
                         ],
-                      ),
+                      ],
                     ),
                   ),
                 ],

@@ -4,6 +4,9 @@ import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_spacing.dart';
 import 'package:dhanra_new/core/theme/app_typography.dart';
 import 'package:dhanra_new/core/widgets/widgets.dart';
+import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
+import 'package:dhanra_new/features/accounts/domain/usecases/create_account_usecase.dart';
+import 'package:dhanra_new/features/accounts/presentation/widgets/add_edit_account_dialog.dart';
 import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_state.dart';
@@ -79,6 +82,71 @@ class _DashboardView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // 0. Setup Account Banner (if balance == 0)
+                      if (summary.totalBalance == 0) ...[
+                        AppCard(
+                          variant: AppCardVariant.hero,
+                          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                          padding: AppSpacing.paddingMD,
+                          onTap: () async {
+                            final newAccount = await showModalBottomSheet<AccountEntity>(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              builder: (_) => const AddEditAccountDialog(),
+                            );
+                            if (newAccount != null && context.mounted) {
+                              await getIt<CreateAccountUseCase>().call(newAccount);
+                              context.read<DashboardBloc>().add(const RefreshDashboardEvent());
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.account_balance_wallet_rounded,
+                                  color: Colors.white,
+                                  size: 26,
+                                ),
+                              ),
+                              AppSpacing.hGapMD,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '👋 Setup Your First Account',
+                                      style: AppTypography.titleMedium.copyWith(
+                                        color: AppColors.textPrimary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    AppSpacing.vGapXXS,
+                                    Text(
+                                      'Add your Bank, Cash or Wallet balance to start tracking income & expenses.',
+                                      style: AppTypography.bodySmall.copyWith(
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: AppColors.primary,
+                                size: 16,
+                              ),
+                            ],
+                          ),
+                        ),
+                        AppSpacing.vGapMD,
+                      ],
+
                       // 1. Hero Net Balance Card
                       HeroBalanceCard(
                         userName: summary.userName,

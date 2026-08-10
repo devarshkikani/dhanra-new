@@ -1,8 +1,14 @@
+import 'package:dhanra_new/core/di/injection.dart';
+import 'package:dhanra_new/core/services/notification_service.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_radius.dart';
 import 'package:dhanra_new/core/theme/app_spacing.dart';
 import 'package:dhanra_new/core/theme/app_typography.dart';
+import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
+import 'package:dhanra_new/features/accounts/domain/usecases/create_account_usecase.dart';
+import 'package:dhanra_new/features/accounts/domain/usecases/get_accounts_usecase.dart';
 import 'package:dhanra_new/features/accounts/presentation/pages/accounts_page.dart';
+import 'package:dhanra_new/features/accounts/presentation/widgets/add_edit_account_dialog.dart';
 import 'package:dhanra_new/features/analytics/presentation/pages/analytics_page.dart';
 import 'package:dhanra_new/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:dhanra_new/features/settings/presentation/pages/settings_page.dart';
@@ -26,6 +32,34 @@ class _MainShellPageState extends State<MainShellPage> {
     const AccountsPage(),
     const SettingsPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // 1. Proactively request Notification permissions on app launch
+      await NotificationService().requestPermission();
+
+      // 2. Check if user has zero accounts and prompt initial setup
+      final accounts = await getIt<GetAccountsUseCase>().call();
+      if (mounted && accounts.isEmpty) {
+        _promptInitialAccountSetup(context);
+      }
+    });
+  }
+
+  Future<void> _promptInitialAccountSetup(BuildContext context) async {
+    final result = await showModalBottomSheet<AccountEntity>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const AddEditAccountDialog(),
+    );
+
+    if (result != null && mounted) {
+      await getIt<CreateAccountUseCase>().call(result);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

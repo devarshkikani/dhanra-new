@@ -7,7 +7,9 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class AuthCheckRequestedEvent extends AuthEvent {}
+class AuthCheckRequestedEvent extends AuthEvent {
+  const AuthCheckRequestedEvent();
+}
 
 class SignInWithEmailRequestedEvent extends AuthEvent {
   const SignInWithEmailRequestedEvent({

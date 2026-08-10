@@ -278,41 +278,84 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
                 const SizedBox(height: 16),
 
                 // 3. Account Dropdown
-                const Text(
-                  'Account',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Account',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary),
+                    ),
+                    GestureDetector(
+                      onTap: () => context.push(AppRoutes.accounts),
+                      child: const Text(
+                        '+ Add Account',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 6),
-                DropdownButtonFormField<String>(
-                  initialValue: _selectedAccountId,
-                  dropdownColor: AppColors.darkCard,
-                  style: const TextStyle(
-                      color: AppColors.textPrimary, fontSize: 15),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.inputBackground,
-                    border: OutlineInputBorder(
+                if (widget.accounts.isEmpty) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.warning.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(12),
-                      borderSide:
-                          const BorderSide(color: AppColors.inputBorder),
+                      border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info_outline_rounded, color: AppColors.warning, size: 20),
+                        const SizedBox(width: 8),
+                        const Expanded(
+                          child: Text(
+                            'No accounts available.',
+                            style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => context.push(AppRoutes.accounts),
+                          child: const Text('Create Now', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
                     ),
                   ),
-                  items: widget.accounts.map((acc) {
-                    return DropdownMenuItem(
-                      value: acc.id,
-                      child: Text(
-                          '${acc.name} (₹${acc.balance.toStringAsFixed(0)})'),
-                    );
-                  }).toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _selectedAccountId = val;
-                    });
-                  },
-                ),
+                ] else ...[
+                  DropdownButtonFormField<String>(
+                    initialValue: _selectedAccountId,
+                    dropdownColor: AppColors.darkCard,
+                    style: const TextStyle(
+                        color: AppColors.textPrimary, fontSize: 15),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.inputBackground,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: AppColors.inputBorder),
+                      ),
+                    ),
+                    items: widget.accounts.map((acc) {
+                      return DropdownMenuItem(
+                        value: acc.id,
+                        child: Text(
+                            '${acc.name} (₹${acc.balance.toStringAsFixed(0)})'),
+                      );
+                    }).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedAccountId = val;
+                      });
+                    },
+                  ),
+                ],
                 const SizedBox(height: 16),
 
                 // 4. Category Dropdown
