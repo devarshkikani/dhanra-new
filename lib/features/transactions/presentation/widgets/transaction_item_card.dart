@@ -8,11 +8,13 @@ class TransactionItemCard extends StatelessWidget {
   const TransactionItemCard({
     required this.transaction,
     super.key,
+    this.onTap,
     this.onEdit,
     this.onDelete,
   });
 
   final TransactionEntity transaction;
+  final VoidCallback? onTap;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
@@ -72,6 +74,7 @@ class TransactionItemCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       borderRadius: 16,
       padding: const EdgeInsets.all(14),
+      onTap: onTap ?? onEdit,
       child: Row(
         children: [
           Container(
@@ -141,59 +144,6 @@ class TransactionItemCard extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: isIncome ? AppColors.credit : AppColors.debit,
-                ),
-              ),
-              if (transaction.attachmentPath != null &&
-                  transaction.attachmentPath!.isNotEmpty) ...[
-                const SizedBox(height: 3),
-                const Row(
-                  children: [
-                    Icon(Icons.attach_file_rounded,
-                        size: 12, color: AppColors.secondary),
-                    SizedBox(width: 2),
-                    Text(
-                      'Receipt',
-                      style:
-                          TextStyle(fontSize: 10, color: AppColors.secondary),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-          PopupMenuButton<String>(
-            icon: const Icon(
-              Icons.more_vert_rounded,
-              color: AppColors.textSecondary,
-              size: 18,
-            ),
-            color: AppColors.darkSurface,
-            onSelected: (val) {
-              if (val == 'edit') onEdit?.call();
-              if (val == 'delete') onDelete?.call();
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'edit',
-                child: Row(
-                  children: [
-                    Icon(Icons.edit_outlined,
-                        size: 18, color: AppColors.textPrimary),
-                    SizedBox(width: 8),
-                    Text('Edit',
-                        style: TextStyle(color: AppColors.textPrimary)),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_outline_rounded,
-                        size: 18, color: AppColors.error),
-                    SizedBox(width: 8),
-                    Text('Delete', style: TextStyle(color: AppColors.error)),
-                  ],
                 ),
               ),
             ],

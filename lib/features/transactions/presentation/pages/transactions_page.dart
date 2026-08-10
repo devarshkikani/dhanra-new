@@ -7,7 +7,7 @@ import 'package:dhanra_new/features/transactions/domain/entities/transaction_ent
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_bloc.dart';
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_event.dart';
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_state.dart';
-import 'package:dhanra_new/features/transactions/presentation/widgets/add_edit_transaction_dialog.dart';
+import 'package:dhanra_new/features/transactions/presentation/pages/add_edit_transaction_page.dart';
 import 'package:dhanra_new/features/transactions/presentation/widgets/transaction_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,43 +30,25 @@ class TransactionsPage extends StatelessWidget {
 class _TransactionsView extends StatelessWidget {
   const _TransactionsView();
 
-  void _showAddEditDialog(
+  void _openAddEditPage(
     BuildContext context, {
     TransactionEntity? transaction,
   }) {
     final bloc = context.read<TransactionsBloc>();
 
-    showModalBottomSheet<TransactionEntity>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => AddEditTransactionDialog(
-        transaction: transaction,
+    Navigator.of(context)
+        .push<dynamic>(
+      MaterialPageRoute(
+        builder: (_) => AddEditTransactionPage(
+          transaction: transaction,
+        ),
       ),
-    ).then((result) {
+    )
+        .then((result) {
       if (result != null && context.mounted) {
-        if (transaction == null) {
-          bloc.add(CreateTransactionRequestedEvent(result));
-        } else {
-          bloc.add(UpdateTransactionRequestedEvent(result));
-        }
+        bloc.add(const LoadTransactionsEvent());
       }
     });
-  }
-
-  void _confirmDelete(BuildContext context, TransactionEntity transaction) {
-    final bloc = context.read<TransactionsBloc>();
-    AppDialog.show(
-      context: context,
-      title: 'Delete Transaction',
-      message: 'Are you sure you want to delete "${transaction.title}"?',
-      primaryButtonText: 'Delete',
-      secondaryButtonText: 'Cancel',
-      icon: Icons.delete_outline_rounded,
-      onPrimaryPressed: () {
-        bloc.add(DeleteTransactionRequestedEvent(transaction.id));
-      },
-    );
   }
 
   @override
@@ -87,7 +69,7 @@ class _TransactionsView extends StatelessWidget {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 100),
         child: FloatingActionButton.extended(
-          onPressed: () => _showAddEditDialog(context),
+          onPressed: () => _openAddEditPage(context),
           backgroundColor: AppColors.primary,
           extendedPadding: const EdgeInsets.all(16),
           label: const Icon(
@@ -219,11 +201,10 @@ class _TransactionsView extends StatelessWidget {
                                 ...list.map(
                                   (tx) => TransactionItemCard(
                                     transaction: tx,
-                                    onEdit: () => _showAddEditDialog(
+                                    onTap: () => _openAddEditPage(
                                       context,
                                       transaction: tx,
                                     ),
-                                    onDelete: () => _confirmDelete(context, tx),
                                   ),
                                 ),
                                 AppSpacing.vGapSM,

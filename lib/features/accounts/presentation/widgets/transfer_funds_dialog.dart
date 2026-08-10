@@ -1,4 +1,5 @@
 import 'package:dhanra_new/core/common_widgets/app_button.dart';
+import 'package:dhanra_new/core/common_widgets/app_dropdown.dart';
 import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/currency_extension.dart';
@@ -119,24 +120,17 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
                 ),
               ),
               const SizedBox(height: 6),
-              DropdownButtonFormField<String>(
-                initialValue: _fromAccountId,
-                dropdownColor: AppColors.darkCard,
-                style:
-                    const TextStyle(color: AppColors.textPrimary, fontSize: 15),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.inputBackground,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.inputBorder),
-                  ),
-                ),
+              AppDropdown<String>(
+                value: _fromAccountId,
+                prefixIcon: Icons.account_balance_wallet_rounded,
                 items: widget.accounts.map((acc) {
-                  return DropdownMenuItem(
+                  return AppDropdownItem<String>(
                     value: acc.id,
-                    child: Text(
-                        '${acc.name} (${context.currencySymbol}${acc.balance.toStringAsFixed(0)})'),
+                    label: acc.name,
+                    subtitle:
+                        'Balance: ${context.currencySymbol}${acc.balance.toStringAsFixed(0)}',
+                    icon: Icons.account_balance_wallet_rounded,
+                    iconColor: AppColors.primary,
                   );
                 }).toList(),
                 onChanged: (val) {
@@ -155,24 +149,17 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
                 ),
               ),
               const SizedBox(height: 6),
-              DropdownButtonFormField<String>(
-                initialValue: _toAccountId,
-                dropdownColor: AppColors.darkCard,
-                style:
-                    const TextStyle(color: AppColors.textPrimary, fontSize: 15),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColors.inputBackground,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.inputBorder),
-                  ),
-                ),
+              AppDropdown<String>(
+                value: _toAccountId,
+                prefixIcon: Icons.account_balance_wallet_rounded,
                 items: widget.accounts.map((acc) {
-                  return DropdownMenuItem(
+                  return AppDropdownItem<String>(
                     value: acc.id,
-                    child: Text(
-                        '${acc.name} (${context.currencySymbol}${acc.balance.toStringAsFixed(0)})'),
+                    label: acc.name,
+                    subtitle:
+                        'Balance: ${context.currencySymbol}${acc.balance.toStringAsFixed(0)}',
+                    icon: Icons.account_balance_wallet_rounded,
+                    iconColor: AppColors.secondary,
                   );
                 }).toList(),
                 onChanged: (val) {

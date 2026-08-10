@@ -518,12 +518,6 @@ class _AddEditTransactionDialogState extends State<AddEditTransactionDialog> {
                     label: 'Notes (Optional)',
                     hintText: 'e.g. Coffee with team',
                   ),
-                  const SizedBox(height: 16),
-                  AppTextField(
-                    controller: _attachmentController,
-                    label: 'Receipt Attachment Path (Optional)',
-                    hintText: 'e.g. /receipts/coffee_receipt.png',
-                  ),
                   const SizedBox(height: 24),
 
                   AppButton(

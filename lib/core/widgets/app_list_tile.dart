@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_radius.dart';
-import '../theme/app_spacing.dart';
 import '../theme/app_typography.dart';
 
 class AppListTile extends StatelessWidget {
@@ -31,22 +30,32 @@ class AppListTile extends StatelessWidget {
         borderRadius: AppRadius.borderMD,
         border: Border.all(color: AppColors.glassBorder),
       ),
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        shape: RoundedRectangleBorder(borderRadius: AppRadius.borderMD),
-        leading: leading,
-        title: Text(
-          title,
-          style: AppTypography.titleMedium.copyWith(color: AppColors.textPrimary),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: AppRadius.borderMD,
+        child: ListTile(
+          onTap: onTap,
+          splashColor: AppColors.primary.withValues(alpha: 0.18),
+          // highlightColor: AppColors.primary.withValues(alpha: 0.08),
+          hoverColor: AppColors.primary.withValues(alpha: 0.08),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          shape: RoundedRectangleBorder(borderRadius: AppRadius.borderMD),
+          leading: leading,
+          title: Text(
+            title,
+            style: AppTypography.titleMedium
+                .copyWith(color: AppColors.textPrimary),
+          ),
+          subtitle: subtitle != null
+              ? Text(
+                  subtitle!,
+                  style: AppTypography.bodySmall
+                      .copyWith(color: AppColors.textSecondary),
+                )
+              : null,
+          trailing: trailing,
         ),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle!,
-                style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
-              )
-            : null,
-        trailing: trailing,
       ),
     );
   }

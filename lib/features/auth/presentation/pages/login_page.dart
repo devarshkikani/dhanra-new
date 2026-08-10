@@ -1,10 +1,12 @@
 import 'package:dhanra_new/core/common_widgets/app_button.dart';
+import 'package:dhanra_new/core/common_widgets/app_tab_bar.dart';
 import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_gradients.dart';
-import 'package:dhanra_new/core/widgets/widgets.dart' hide AppButton, AppTextField;
+import 'package:dhanra_new/core/widgets/widgets.dart'
+    hide AppButton, AppTextField;
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_event.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_state.dart';
@@ -99,45 +101,26 @@ class _LoginPageState extends State<LoginPage>
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          gradient: AppGradients.primary,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.account_balance_wallet_rounded,
+                  Image.asset(
+                    'assets/images/dhanra.png',
+                    height: 44,
+                    fit: BoxFit.contain,
+                    color: AppColors.textPrimary,
+                    errorBuilder: (_, __, ___) => ShaderMask(
+                      shaderCallback: (bounds) =>
+                          AppGradients.primary.createShader(bounds),
+                      child: const Text(
+                        'Dhanra',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          size: 30,
+                          letterSpacing: 0.5,
                         ),
                       ),
-                      const SizedBox(width: 14),
-                      ShaderMask(
-                        shaderCallback: (bounds) =>
-                            AppGradients.primary.createShader(bounds),
-                        child: const Text(
-                          'Dhanra',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 32),
                   const Text(
@@ -157,27 +140,12 @@ class _LoginPageState extends State<LoginPage>
                     ),
                   ),
                   const SizedBox(height: 28),
-                  GlassCard(
-                    padding: const EdgeInsets.all(4),
-                    child: TabBar(
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        gradient: AppGradients.primary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      indicatorSize: TabBarIndicatorSize.tab,
-                      dividerColor: Colors.transparent,
-                      labelColor: Colors.white,
-                      unselectedLabelColor: AppColors.textSecondary,
-                      labelStyle: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
-                      tabs: const [
-                        Tab(text: 'Email'),
-                        Tab(text: 'Mobile OTP'),
-                      ],
-                    ),
+                  AppSegmentedTabBar(
+                    controller: _tabController,
+                    tabs: const [
+                      Tab(text: 'Email'),
+                      Tab(text: 'Mobile OTP'),
+                    ],
                   ),
                   const SizedBox(height: 24),
                   SizedBox(

@@ -1,4 +1,5 @@
 import 'package:dhanra_new/core/common_widgets/app_button.dart';
+import 'package:dhanra_new/core/common_widgets/app_tab_bar.dart';
 import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/di/injection.dart';
@@ -138,24 +139,23 @@ class _CategoriesView extends StatelessWidget {
                             },
                           ),
                           const SizedBox(height: 14),
-                          Row(
-                            children: [
-                              _buildSegmentedTab(
-                                context: context,
-                                label: 'Expense Categories',
-                                type: CategoryType.expense,
-                                isSelected:
-                                    state.selectedType == CategoryType.expense,
-                              ),
-                              const SizedBox(width: 10),
-                              _buildSegmentedTab(
-                                context: context,
-                                label: 'Income Categories',
-                                type: CategoryType.income,
-                                isSelected:
-                                    state.selectedType == CategoryType.income,
-                              ),
-                            ],
+                          DefaultTabController(
+                            length: 2,
+                            initialIndex: state.selectedType == CategoryType.expense ? 0 : 1,
+                            child: AppSegmentedTabBar(
+                              onTap: (index) {
+                                final type = index == 0
+                                    ? CategoryType.expense
+                                    : CategoryType.income;
+                                context
+                                    .read<CategoriesBloc>()
+                                    .add(CategoryTypeTabChangedEvent(type));
+                              },
+                              tabs: const [
+                                Tab(text: 'Expense'),
+                                Tab(text: 'Income'),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: 16),
                         ],

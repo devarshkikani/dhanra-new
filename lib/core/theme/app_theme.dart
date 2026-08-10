@@ -1,4 +1,5 @@
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 abstract class AppTheme {
@@ -19,12 +20,25 @@ abstract class AppTheme {
         backgroundColor: AppColors.darkBackground,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
+        titleTextStyle: AppTypography.headlineSmall,
         iconTheme: IconThemeData(color: AppColors.darkTextPrimary),
+      ),
+      textTheme: const TextTheme(
+        displayLarge: AppTypography.displayLarge,
+        displayMedium: AppTypography.displayMedium,
+        displaySmall: AppTypography.displaySmall,
+        headlineLarge: AppTypography.headlineLarge,
+        headlineMedium: AppTypography.headlineMedium,
+        headlineSmall: AppTypography.headlineSmall,
+        titleLarge: AppTypography.titleLarge,
+        titleMedium: AppTypography.titleMedium,
+        titleSmall: AppTypography.titleSmall,
+        bodyLarge: AppTypography.bodyLarge,
+        bodyMedium: AppTypography.bodyMedium,
+        bodySmall: AppTypography.bodySmall,
+        labelLarge: AppTypography.labelLarge,
+        labelMedium: AppTypography.labelMedium,
+        labelSmall: AppTypography.labelSmall,
       ),
       cardTheme: CardThemeData(
         color: AppColors.darkSurface,

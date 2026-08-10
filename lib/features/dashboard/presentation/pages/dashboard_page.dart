@@ -18,8 +18,7 @@ import 'package:dhanra_new/features/dashboard/presentation/widgets/quick_actions
 import 'package:dhanra_new/features/accounts/domain/usecases/get_accounts_usecase.dart';
 import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
-import 'package:dhanra_new/features/transactions/domain/usecases/create_transaction_usecase.dart';
-import 'package:dhanra_new/features/transactions/presentation/widgets/add_edit_transaction_dialog.dart';
+import 'package:dhanra_new/features/transactions/presentation/pages/add_edit_transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
@@ -165,21 +164,17 @@ class _DashboardView extends StatelessWidget {
                         monthlyIncome: summary.monthlyIncome,
                         monthlyExpense: summary.monthlyExpense,
                         savingsRate: summary.savingsRatePercentage,
-                        onAddTransaction: () {
-                          showModalBottomSheet<TransactionEntity>(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (_) => const AddEditTransactionDialog(),
-                          ).then((result) async {
-                            if (result != null && context.mounted) {
-                              await getIt<CreateTransactionUseCase>()
-                                  .call(result);
-                              context
-                                  .read<DashboardBloc>()
-                                  .add(const RefreshDashboardEvent());
-                            }
-                          });
+                        onAddTransaction: () async {
+                          final result = await Navigator.of(context).push<dynamic>(
+                            MaterialPageRoute(
+                              builder: (_) => const AddEditTransactionPage(),
+                            ),
+                          );
+                          if (result != null && context.mounted) {
+                            context
+                                .read<DashboardBloc>()
+                                .add(const RefreshDashboardEvent());
+                          }
                         },
                       ),
                       // const SizedBox(height: 60),

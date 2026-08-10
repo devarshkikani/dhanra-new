@@ -5,6 +5,7 @@ import 'package:dhanra_new/features/auth/data/datasources/auth_remote_data_sourc
 import 'package:dhanra_new/features/auth/domain/entities/user_entity.dart';
 import 'package:dhanra_new/features/auth/domain/repositories/i_auth_repository.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @LazySingleton(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
@@ -126,6 +127,8 @@ class AuthRepositoryImpl implements IAuthRepository {
     try {
       await _remoteDataSource.signOut();
       await _localDataSource.clearCache();
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
       return (null, null);
     } catch (e) {
       return (AuthFailure(e.toString()), null);

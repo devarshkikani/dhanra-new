@@ -51,3 +51,20 @@ flutter:
     - assets/images/
     - assets/images/banks/
     - assets/json/
+    - assets/fonts/
+  fonts:
+    - family: SK Modernist
+      fonts:
+        - asset: assets/fonts/sk_modernist/Sk-Modernist-Regular.otf
+        - asset: assets/fonts/sk_modernist/Sk-Modernist-Bold.otf
+          weight: 700
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/geist/Geist-Regular.ttf
+        - asset: assets/fonts/geist/Geist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/geist/Geist-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/geist/Geist-Bold.ttf
+          weight: 700
+

@@ -285,6 +285,69 @@ class SettingsPage extends StatelessWidget {
                           'App version v1.0.0, privacy policy, and licenses',
                       onTap: () => context.push(AppRoutes.aboutPrivacy),
                     ),
+                    AppSpacing.vGapXL,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.logout_rounded,
+                      color: AppColors.error,
+                      title: 'Sign Out',
+                      subtitle: 'Log out of your Dhanra account',
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (dialogContext) => AlertDialog(
+                            backgroundColor: AppColors.darkCard,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            title: const Text(
+                              'Sign Out',
+                              style: TextStyle(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            content: const Text(
+                              'Are you sure you want to sign out of your account?',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(dialogContext),
+                                child: const Text(
+                                  'Cancel',
+                                  style:
+                                      TextStyle(color: AppColors.textSecondary),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.error,
+                                  minimumSize: const Size(100, 44),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(dialogContext);
+                                  context.read<AuthBloc>().add(
+                                        SignOutRequestedEvent(),
+                                      );
+                                  context.go(AppRoutes.login);
+                                },
+                                child: const Text(
+                                  'Sign Out',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               );

@@ -16,8 +16,8 @@ class AiSummaryCard extends StatelessWidget {
     return GlassCard(
       padding: const EdgeInsets.all(18),
       borderRadius: 20,
-      borderColor: AppColors.secondary.withValues(alpha: 0.3),
-      backgroundColor: AppColors.secondary.withValues(alpha: 0.04),
+      borderColor: AppColors.primary.withValues(alpha: 0.35),
+      backgroundColor: AppColors.primary.withValues(alpha: 0.04),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
