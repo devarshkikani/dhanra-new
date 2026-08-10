@@ -9,136 +9,138 @@ class AboutPrivacyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      appBar: const AppAppBar(
-        title: 'About & Legal',
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: AppSpacing.paddingMD,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Logo & App Build Metadata
-              Center(
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/images/dhanra.png',
-                      height: 36,
-                      errorBuilder: (_, __, ___) => const Text(
-                        'Dhanra',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const AppAppBar(
+          title: 'About & Legal',
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: AppSpacing.paddingMD,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Logo & App Build Metadata
+                Center(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/dhanra.png',
+                        height: 36,
+                        errorBuilder: (_, __, ___) => const Text(
+                          'Dhanra',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    AppSpacing.vGapXS,
-                    Text(
-                      'Version 1.0.0 (Build 1)',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                      AppSpacing.vGapXS,
+                      Text(
+                        'Version 1.0.0 (Build 1)',
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
-                    ),
-                    AppSpacing.vGapXXS,
-                    Text(
-                      'AI-Powered Personal Finance & Expense Tracker',
-                      style: AppTypography.labelMedium.copyWith(
-                        color: AppColors.primary,
+                      AppSpacing.vGapXXS,
+                      Text(
+                        'AI-Powered Personal Finance & Expense Tracker',
+                        style: AppTypography.labelMedium.copyWith(
+                          color: AppColors.primary,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              AppSpacing.vGapLG,
+                AppSpacing.vGapLG,
 
-              Text(
-                'Legal & Information',
-                style: AppTypography.labelSmall.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: AppColors.textSecondary,
+                Text(
+                  'Legal & Information',
+                  style: AppTypography.labelSmall.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.8,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-              ),
-              AppSpacing.vGapSM,
+                AppSpacing.vGapSM,
 
-              // Privacy Policy Tile
-              _buildLegalTile(
-                icon: Icons.privacy_tip_rounded,
-                color: AppColors.secondary,
-                title: 'Privacy Policy',
-                subtitle: 'Learn how your financial data is kept private & offline on device',
-                onTap: () {
-                  showDialog(
+                // Privacy Policy Tile
+                _buildLegalTile(
+                  icon: Icons.privacy_tip_rounded,
+                  color: AppColors.secondary,
+                  title: 'Privacy Policy',
+                  subtitle: 'Learn how your financial data is kept private & offline on device',
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        backgroundColor: AppColors.darkCard,
+                        title: const Text('Privacy Policy', style: TextStyle(color: Colors.white)),
+                        content: const SingleChildScrollView(
+                          child: Text(
+                            'Dhanra values your financial privacy. All SMS logs, account balances, and transaction history remain locally stored and encrypted on your device. No financial records are harvested or sold to third-party advertisers.',
+                            style: TextStyle(color: AppColors.textSecondary),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            child: const Text('Close', style: TextStyle(color: AppColors.primary)),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                AppSpacing.vGapXS,
+
+                // Terms of Service Tile
+                _buildLegalTile(
+                  icon: Icons.gavel_rounded,
+                  color: AppColors.primary,
+                  title: 'Terms of Service',
+                  subtitle: 'Application terms, conditions, and disclaimer details',
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        backgroundColor: AppColors.darkCard,
+                        title: const Text('Terms of Service', style: TextStyle(color: Colors.white)),
+                        content: const SingleChildScrollView(
+                          child: Text(
+                            'By using Dhanra, you agree that financial calculations, budget limits, and AI summaries are for informational management purposes. Always double-check bank statements for official accounting.',
+                            style: TextStyle(color: AppColors.textSecondary),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            child: const Text('Close', style: TextStyle(color: AppColors.primary)),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                AppSpacing.vGapXS,
+
+                // Open Source Licenses Tile
+                _buildLegalTile(
+                  icon: Icons.code_rounded,
+                  color: AppColors.accent,
+                  title: 'Open Source Licenses',
+                  subtitle: 'Third-party Flutter packages & software attribution',
+                  onTap: () => showLicensePage(
                     context: context,
-                    builder: (ctx) => AlertDialog(
-                      backgroundColor: AppColors.darkCard,
-                      title: const Text('Privacy Policy', style: TextStyle(color: Colors.white)),
-                      content: const SingleChildScrollView(
-                        child: Text(
-                          'Dhanra values your financial privacy. All SMS logs, account balances, and transaction history remain locally stored and encrypted on your device. No financial records are harvested or sold to third-party advertisers.',
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(ctx).pop(),
-                          child: const Text('Close', style: TextStyle(color: AppColors.primary)),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              AppSpacing.vGapXS,
-
-              // Terms of Service Tile
-              _buildLegalTile(
-                icon: Icons.gavel_rounded,
-                color: AppColors.primary,
-                title: 'Terms of Service',
-                subtitle: 'Application terms, conditions, and disclaimer details',
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      backgroundColor: AppColors.darkCard,
-                      title: const Text('Terms of Service', style: TextStyle(color: Colors.white)),
-                      content: const SingleChildScrollView(
-                        child: Text(
-                          'By using Dhanra, you agree that financial calculations, budget limits, and AI summaries are for informational management purposes. Always double-check bank statements for official accounting.',
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(ctx).pop(),
-                          child: const Text('Close', style: TextStyle(color: AppColors.primary)),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              AppSpacing.vGapXS,
-
-              // Open Source Licenses Tile
-              _buildLegalTile(
-                icon: Icons.code_rounded,
-                color: AppColors.accent,
-                title: 'Open Source Licenses',
-                subtitle: 'Third-party Flutter packages & software attribution',
-                onTap: () => showLicensePage(
-                  context: context,
-                  applicationName: 'Dhanra',
-                  applicationVersion: '1.0.0',
+                    applicationName: 'Dhanra',
+                    applicationVersion: '1.0.0',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -153,7 +155,6 @@ class AboutPrivacyPage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return AppCard(
-      variant: AppCardVariant.standard,
       padding: AppSpacing.paddingMD,
       onTap: onTap,
       child: Row(

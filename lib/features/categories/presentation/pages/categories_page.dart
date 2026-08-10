@@ -4,6 +4,7 @@ import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/di/injection.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart' hide AppButton, AppTextField;
 import 'package:dhanra_new/features/categories/domain/entities/category_entity.dart';
 import 'package:dhanra_new/features/categories/presentation/bloc/categories_bloc.dart';
 import 'package:dhanra_new/features/categories/presentation/bloc/categories_event.dart';
@@ -90,18 +91,13 @@ class _CategoriesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      appBar: AppBar(
-        title: const Text('Categories Management'),
-        backgroundColor: AppColors.darkBackground,
-        elevation: 0,
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.darkBackground,
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const AppAppBar(
+          title: 'Categories Management',
         ),
-        child: SafeArea(
+        body: SafeArea(
           bottom: false,
           child: BlocBuilder<CategoriesBloc, CategoriesState>(
             builder: (context, state) {

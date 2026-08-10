@@ -198,6 +198,7 @@ extension GetItInjectableX on _i174.GetIt {
               gh<_i371.TransactionLocalDataSource>(),
               gh<_i688.AccountLocalDataSource>(),
               gh<_i838.DashboardLocalDataSource>(),
+              gh<_i155.BudgetLocalDataSource>(),
             ));
     gh.lazySingleton<_i292.AnalyticsLocalDataSource>(
         () => _i292.AnalyticsLocalDataSourceImpl());
@@ -268,7 +269,7 @@ extension GetItInjectableX on _i174.GetIt {
           budgetDataSource: gh<_i155.BudgetLocalDataSource>(),
           goalDataSource: gh<_i692.GoalLocalDataSource>(),
         ));
-    gh.factory<_i585.SettingsBloc>(() => _i585.SettingsBloc(
+    gh.lazySingleton<_i585.SettingsBloc>(() => _i585.SettingsBloc(
           dataSource: gh<_i917.AppSettingsLocalDataSource>(),
           securityService: gh<_i337.SecurityService>(),
           backupExportService: gh<_i425.BackupExportService>(),

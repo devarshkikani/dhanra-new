@@ -12,9 +12,14 @@ import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_event.
 import 'package:dhanra_new/features/dashboard/presentation/bloc/dashboard_state.dart';
 import 'package:dhanra_new/features/dashboard/presentation/widgets/ai_summary_card.dart';
 import 'package:dhanra_new/features/dashboard/presentation/widgets/budget_overview_card.dart';
+import 'package:dhanra_new/features/dashboard/presentation/widgets/goals_overview_card.dart';
 import 'package:dhanra_new/features/dashboard/presentation/widgets/hero_balance_card.dart';
-import 'package:dhanra_new/features/dashboard/presentation/widgets/income_expense_row.dart';
 import 'package:dhanra_new/features/dashboard/presentation/widgets/quick_actions_row.dart';
+import 'package:dhanra_new/features/accounts/domain/usecases/get_accounts_usecase.dart';
+import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
+import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
+import 'package:dhanra_new/features/transactions/domain/usecases/create_transaction_usecase.dart';
+import 'package:dhanra_new/features/transactions/presentation/widgets/add_edit_transaction_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
@@ -38,7 +43,7 @@ class _DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: Colors.transparent,
       appBar: const AppAppBar(
         showLogo: true,
       ),
@@ -48,7 +53,8 @@ class _DashboardView extends StatelessWidget {
           builder: (context, state) {
             if (state is DashboardLoadingState ||
                 state is DashboardInitialState) {
-              return const AppLoading(message: 'Fetching financial overview...');
+              return const AppLoading(
+                  message: 'Fetching financial overview...');
             }
 
             if (state is DashboardErrorState) {
@@ -86,18 +92,23 @@ class _DashboardView extends StatelessWidget {
                       if (summary.totalBalance == 0) ...[
                         AppCard(
                           variant: AppCardVariant.hero,
-                          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                          backgroundColor:
+                              AppColors.primary.withValues(alpha: 0.15),
                           padding: AppSpacing.paddingMD,
                           onTap: () async {
-                            final newAccount = await showModalBottomSheet<AccountEntity>(
+                            final newAccount =
+                                await showModalBottomSheet<AccountEntity>(
                               context: context,
                               isScrollControlled: true,
                               backgroundColor: Colors.transparent,
                               builder: (_) => const AddEditAccountDialog(),
                             );
                             if (newAccount != null && context.mounted) {
-                              await getIt<CreateAccountUseCase>().call(newAccount);
-                              context.read<DashboardBloc>().add(const RefreshDashboardEvent());
+                              await getIt<CreateAccountUseCase>()
+                                  .call(newAccount);
+                              context
+                                  .read<DashboardBloc>()
+                                  .add(const RefreshDashboardEvent());
                             }
                           },
                           child: Row(
@@ -151,38 +162,49 @@ class _DashboardView extends StatelessWidget {
                       HeroBalanceCard(
                         userName: summary.userName,
                         totalBalance: summary.totalBalance,
+                        monthlyIncome: summary.monthlyIncome,
+                        monthlyExpense: summary.monthlyExpense,
                         savingsRate: summary.savingsRatePercentage,
+                        onAddTransaction: () {
+                          showModalBottomSheet<TransactionEntity>(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => const AddEditTransactionDialog(),
+                          ).then((result) async {
+                            if (result != null && context.mounted) {
+                              await getIt<CreateTransactionUseCase>()
+                                  .call(result);
+                              context
+                                  .read<DashboardBloc>()
+                                  .add(const RefreshDashboardEvent());
+                            }
+                          });
+                        },
                       ),
-                      AppSpacing.vGapMD,
+                      // const SizedBox(height: 60),
 
-                      // 2. Income vs Expense Side-by-Side Chips
-                      IncomeExpenseRow(
-                        income: summary.monthlyIncome,
-                        expense: summary.monthlyExpense,
-                      ),
-                      AppSpacing.vGapLG,
-
-                      // 3. Quick Action Shortcuts
-                      QuickActionsRow(
-                        onAddExpense: () {
-                          context.push(AppRoutes.transactions);
-                        },
-                        onAddIncome: () {
-                          context.push(AppRoutes.transactions);
-                        },
-                        onTransfer: () {
-                          context.push(AppRoutes.accounts);
-                        },
-                        onAiAssistant: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('AI Financial Insights triggered'),
-                            ),
-                          );
-                        },
-                      ),
-                      AppSpacing.vGapLG,
+                      // // 3. Quick Action Shortcuts
+                      // QuickActionsRow(
+                      //   onAddExpense: () {
+                      //     context.push(AppRoutes.transactions);
+                      //   },
+                      //   onAddIncome: () {
+                      //     context.push(AppRoutes.transactions);
+                      //   },
+                      //   onTransfer: () {
+                      //     context.push(AppRoutes.accounts);
+                      //   },
+                      //   onAiAssistant: () {
+                      //     ScaffoldMessenger.of(context).showSnackBar(
+                      //       const SnackBar(
+                      //         content: Text('AI Financial Insights triggered'),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+                      AppSpacing.vGapXL,
+                      AppSpacing.vGapXL,
 
                       // 4. Monthly Budget Progress Card
                       GestureDetector(
@@ -194,7 +216,11 @@ class _DashboardView extends StatelessWidget {
                       ),
                       AppSpacing.vGapMD,
 
-                      // 5. AI Summary Card
+                      // 5. Savings Goals Overview Card
+                      const GoalsOverviewCard(),
+                      AppSpacing.vGapMD,
+
+                      // 6. AI Summary Card
                       AiSummaryCard(
                         insightText: summary.aiInsightSummary,
                       ),
@@ -227,7 +253,8 @@ class _DashboardView extends StatelessWidget {
                       if (summary.recentTransactions.isEmpty)
                         const AppEmptyState(
                           title: 'No Recent Transactions',
-                          message: 'Your recent transactions will show up here.',
+                          message:
+                              'Your recent transactions will show up here.',
                         )
                       else
                         ...summary.recentTransactions.map(

@@ -1,5 +1,6 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:flutter/material.dart';
 
 class TransactionTile extends StatelessWidget {
@@ -25,7 +26,7 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final amountColor = isCredit ? AppColors.credit : AppColors.debit;
-    final prefixSign = isCredit ? '+₹' : '-₹';
+    final prefixSign = isCredit ? '+${context.currencySymbol}' : '-${context.currencySymbol}';
 
     return GlassCard(
       onTap: onTap,

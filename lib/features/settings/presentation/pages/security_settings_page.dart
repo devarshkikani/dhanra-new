@@ -27,7 +27,8 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           'Set App Security PIN',
-          style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
+          style: AppTypography.headlineSmall
+              .copyWith(color: AppColors.textPrimary),
         ),
         content: AppTextField(
           controller: _pinController,
@@ -39,7 +40,8 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogCtx).pop(),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () {
@@ -51,7 +53,9 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                     );
               }
             },
-            child: const Text('Save PIN', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+            child: const Text('Save PIN',
+                style: TextStyle(
+                    color: AppColors.primary, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -66,8 +70,9 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+    return AppBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: const AppAppBar(
         title: 'Security & App Lock',
       ),
@@ -162,7 +167,8 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: AppColors.secondary.withValues(alpha: 0.12),
+                              color:
+                                  AppColors.secondary.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Icon(
@@ -217,6 +223,6 @@ class _SecuritySettingsPageState extends State<SecuritySettingsPage> {
           },
         ),
       ),
-    );
+    ));
   }
 }

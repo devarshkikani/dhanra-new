@@ -1,5 +1,6 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/goals/domain/entities/goals_summary_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -76,7 +77,7 @@ class GoalsSummaryHeroCard extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                '₹${summary.totalSaved.toStringAsFixed(0)}',
+                '${context.currencySymbol}${summary.totalSaved.toStringAsFixed(0)}',
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -84,7 +85,7 @@ class GoalsSummaryHeroCard extends StatelessWidget {
                 ),
               ),
               Text(
-                ' / ₹${summary.totalTarget.toStringAsFixed(0)}',
+                ' / ${context.currencySymbol}${summary.totalTarget.toStringAsFixed(0)}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,

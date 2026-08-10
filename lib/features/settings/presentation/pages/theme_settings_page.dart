@@ -14,64 +14,66 @@ class ThemeSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      appBar: const AppAppBar(
-        title: 'Theme & Appearance',
-      ),
-      body: SafeArea(
-        child: BlocBuilder<SettingsBloc, SettingsState>(
-          builder: (context, state) {
-            if (state is SettingsLoadedState) {
-              final currentTheme = state.settings.themePreference;
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const AppAppBar(
+          title: 'Theme & Appearance',
+        ),
+        body: SafeArea(
+          child: BlocBuilder<SettingsBloc, SettingsState>(
+            builder: (context, state) {
+              if (state is SettingsLoadedState) {
+                final currentTheme = state.settings.themePreference;
 
-              return Padding(
-                padding: AppSpacing.paddingMD,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Choose Theme Mode',
-                      style: AppTypography.labelSmall.copyWith(
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.8,
-                        color: AppColors.textSecondary,
+                return Padding(
+                  padding: AppSpacing.paddingMD,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Choose Theme Mode',
+                        style: AppTypography.labelSmall.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                          color: AppColors.textSecondary,
+                        ),
                       ),
-                    ),
-                    AppSpacing.vGapSM,
-                    _buildThemeTile(
-                      context: context,
-                      title: 'Dark Mode (OLED Slate)',
-                      subtitle: 'Sleek dark theme optimized for OLED screens',
-                      icon: Icons.dark_mode_rounded,
-                      value: AppThemePreference.dark,
-                      groupValue: currentTheme,
-                    ),
-                    AppSpacing.vGapXS,
-                    _buildThemeTile(
-                      context: context,
-                      title: 'System Default',
-                      subtitle: 'Match system dark/light appearance setting',
-                      icon: Icons.brightness_auto_rounded,
-                      value: AppThemePreference.system,
-                      groupValue: currentTheme,
-                    ),
-                    AppSpacing.vGapXS,
-                    _buildThemeTile(
-                      context: context,
-                      title: 'Light Mode',
-                      subtitle: 'Clean high contrast bright theme',
-                      icon: Icons.light_mode_rounded,
-                      value: AppThemePreference.light,
-                      groupValue: currentTheme,
-                    ),
-                  ],
-                ),
-              );
-            }
+                      AppSpacing.vGapSM,
+                      _buildThemeTile(
+                        context: context,
+                        title: 'Dark Mode (OLED Slate)',
+                        subtitle: 'Sleek dark theme optimized for OLED screens',
+                        icon: Icons.dark_mode_rounded,
+                        value: AppThemePreference.dark,
+                        groupValue: currentTheme,
+                      ),
+                      AppSpacing.vGapXS,
+                      _buildThemeTile(
+                        context: context,
+                        title: 'System Default',
+                        subtitle: 'Match system dark/light appearance setting',
+                        icon: Icons.brightness_auto_rounded,
+                        value: AppThemePreference.system,
+                        groupValue: currentTheme,
+                      ),
+                      AppSpacing.vGapXS,
+                      _buildThemeTile(
+                        context: context,
+                        title: 'Light Mode',
+                        subtitle: 'Clean high contrast day theme',
+                        icon: Icons.light_mode_rounded,
+                        value: AppThemePreference.light,
+                        groupValue: currentTheme,
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-            return const AppLoading(message: 'Loading theme settings...');
-          },
+              return const AppLoading(message: 'Loading theme settings...');
+            },
+          ),
         ),
       ),
     );

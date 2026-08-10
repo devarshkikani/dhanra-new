@@ -13,8 +13,9 @@ class BackupRestorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+    return AppBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: const AppAppBar(
         title: 'Backup & Restore',
       ),
@@ -31,7 +32,8 @@ class BackupRestorePage extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            final isExporting = (state is SettingsLoadedState) ? state.isExporting : false;
+            final isExporting =
+                (state is SettingsLoadedState) ? state.isExporting : false;
 
             return SingleChildScrollView(
               padding: AppSpacing.paddingMD,
@@ -163,6 +165,6 @@ class BackupRestorePage extends StatelessWidget {
           },
         ),
       ),
-    );
+    ));
   }
 }

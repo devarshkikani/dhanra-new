@@ -61,7 +61,7 @@ class _AnalyticsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: Colors.transparent,
       appBar: const AppAppBar(
         title: 'Financial Analytics',
       ),

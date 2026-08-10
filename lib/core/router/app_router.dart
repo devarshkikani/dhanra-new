@@ -135,31 +135,19 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.themeSettings,
-      builder: (context, state) => BlocProvider<SettingsBloc>(
-        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
-        child: const ThemeSettingsPage(),
-      ),
+      builder: (context, state) => const ThemeSettingsPage(),
     ),
     GoRoute(
       path: AppRoutes.currencySettings,
-      builder: (context, state) => BlocProvider<SettingsBloc>(
-        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
-        child: const CurrencySettingsPage(),
-      ),
+      builder: (context, state) => const CurrencySettingsPage(),
     ),
     GoRoute(
       path: AppRoutes.securitySettings,
-      builder: (context, state) => BlocProvider<SettingsBloc>(
-        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
-        child: const SecuritySettingsPage(),
-      ),
+      builder: (context, state) => const SecuritySettingsPage(),
     ),
     GoRoute(
       path: AppRoutes.backupRestore,
-      builder: (context, state) => BlocProvider<SettingsBloc>(
-        create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
-        child: const BackupRestorePage(),
-      ),
+      builder: (context, state) => const BackupRestorePage(),
     ),
     GoRoute(
       path: AppRoutes.aboutPrivacy,

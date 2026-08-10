@@ -13,8 +13,9 @@ class NotificationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+    return AppBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: const AppAppBar(
         title: 'Notifications & Alerts',
       ),
@@ -33,7 +34,8 @@ class NotificationsPage extends StatelessWidget {
           builder: (context, state) {
             if (state is NotificationsLoadingState ||
                 state is NotificationsInitialState) {
-              return const AppLoading(message: 'Loading notification settings...');
+              return const AppLoading(
+                  message: 'Loading notification settings...');
             }
 
             if (state is NotificationsErrorState) {
@@ -49,8 +51,10 @@ class NotificationsPage extends StatelessWidget {
               final settings = state.settings;
               final isPermissionGranted = state.isPermissionGranted;
 
-              final hourStr = settings.dailyReminderHour.toString().padLeft(2, '0');
-              final minStr = settings.dailyReminderMinute.toString().padLeft(2, '0');
+              final hourStr =
+                  settings.dailyReminderHour.toString().padLeft(2, '0');
+              final minStr =
+                  settings.dailyReminderMinute.toString().padLeft(2, '0');
               final timeFormatted = '$hourStr:$minStr';
 
               return SingleChildScrollView(
@@ -62,7 +66,8 @@ class NotificationsPage extends StatelessWidget {
                     if (!isPermissionGranted) ...[
                       AppCard(
                         variant: AppCardVariant.standard,
-                        backgroundColor: AppColors.warning.withValues(alpha: 0.12),
+                        backgroundColor:
+                            AppColors.warning.withValues(alpha: 0.12),
                         padding: AppSpacing.paddingMD,
                         child: Row(
                           children: [
@@ -99,7 +104,8 @@ class NotificationsPage extends StatelessWidget {
                               width: 80,
                               onPressed: () => context
                                   .read<NotificationsBloc>()
-                                  .add(const RequestNotificationPermissionEvent()),
+                                  .add(
+                                      const RequestNotificationPermissionEvent()),
                             ),
                           ],
                         ),
@@ -197,7 +203,8 @@ class NotificationsPage extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: AppColors.secondary.withValues(alpha: 0.12),
+                                color:
+                                    AppColors.secondary.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(
@@ -260,7 +267,7 @@ class NotificationsPage extends StatelessWidget {
           },
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildSwitchTile({

@@ -6,7 +6,7 @@ import 'package:dhanra_new/features/settings/presentation/bloc/settings_state.da
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-@injectable
+@lazySingleton
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final AppSettingsLocalDataSource dataSource;
   final SecurityService securityService;

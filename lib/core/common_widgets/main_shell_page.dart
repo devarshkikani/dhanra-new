@@ -13,6 +13,7 @@ import 'package:dhanra_new/features/analytics/presentation/pages/analytics_page.
 import 'package:dhanra_new/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:dhanra_new/features/settings/presentation/pages/settings_page.dart';
 import 'package:dhanra_new/features/transactions/presentation/pages/transactions_page.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class MainShellPage extends StatefulWidget {
@@ -63,8 +64,9 @@ class _MainShellPageState extends State<MainShellPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+    return AppBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
@@ -90,17 +92,22 @@ class _MainShellPageState extends State<MainShellPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(0, Icons.home_rounded, Icons.home_outlined, 'Home'),
-                _buildNavItem(1, Icons.receipt_long_rounded, Icons.receipt_long_outlined, 'Txns'),
-                _buildNavItem(2, Icons.bar_chart_rounded, Icons.bar_chart_outlined, 'Analytics'),
-                _buildNavItem(3, Icons.account_balance_wallet_rounded, Icons.account_balance_wallet_outlined, 'Accounts'),
-                _buildNavItem(4, Icons.settings_rounded, Icons.settings_outlined, 'Settings'),
+                _buildNavItem(
+                    0, Icons.home_rounded, Icons.home_outlined, 'Home'),
+                _buildNavItem(1, Icons.receipt_long_rounded,
+                    Icons.receipt_long_outlined, 'Txns'),
+                _buildNavItem(2, Icons.bar_chart_rounded,
+                    Icons.bar_chart_outlined, 'Analytics'),
+                _buildNavItem(3, Icons.account_balance_wallet_rounded,
+                    Icons.account_balance_wallet_outlined, 'Accounts'),
+                _buildNavItem(4, Icons.settings_rounded,
+                    Icons.settings_outlined, 'Settings'),
               ],
             ),
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildNavItem(

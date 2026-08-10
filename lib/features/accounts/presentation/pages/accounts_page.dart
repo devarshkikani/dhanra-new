@@ -96,7 +96,7 @@ class _AccountsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: Colors.transparent,
       appBar: const AppAppBar(
         title: 'Accounts & Wallets',
       ),

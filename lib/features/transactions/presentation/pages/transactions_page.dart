@@ -3,11 +3,6 @@ import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_spacing.dart';
 import 'package:dhanra_new/core/theme/app_typography.dart';
 import 'package:dhanra_new/core/widgets/widgets.dart';
-import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
-import 'package:dhanra_new/features/accounts/domain/usecases/create_account_usecase.dart';
-import 'package:dhanra_new/features/accounts/domain/usecases/get_accounts_usecase.dart';
-import 'package:dhanra_new/features/accounts/presentation/widgets/add_edit_account_dialog.dart';
-import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_bloc.dart';
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_event.dart';
@@ -35,97 +30,28 @@ class TransactionsPage extends StatelessWidget {
 class _TransactionsView extends StatelessWidget {
   const _TransactionsView();
 
-  Future<void> _showAddEditDialog(
+  void _showAddEditDialog(
     BuildContext context, {
     TransactionEntity? transaction,
-  }) async {
+  }) {
     final bloc = context.read<TransactionsBloc>();
 
-    final accounts = await getIt<GetAccountsUseCase>().call();
-    final categories = await getIt<GetCategoriesUseCase>().call();
-
-    if (!context.mounted) return;
-
-    // Guardrail: If user has zero accounts, prompt Add Account first!
-    if (accounts.isEmpty) {
-      final shouldCreate = await showDialog<bool>(
-        context: context,
-        builder: (dialogCtx) => AlertDialog(
-          backgroundColor: AppColors.darkCard,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text(
-            'Account Required',
-            style: AppTypography.headlineSmall.copyWith(color: AppColors.textPrimary),
-          ),
-          content: Text(
-            'You need to create at least one account (e.g. Bank Account, Cash, or Credit Card) before logging transactions.',
-            style: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogCtx).pop(false),
-              child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
-            ),
-            AppButton(
-              title: '+ Add Account Now',
-              height: 40,
-              width: 160,
-              onPressed: () => Navigator.of(dialogCtx).pop(true),
-            ),
-          ],
-        ),
-      );
-
-      if (shouldCreate == true && context.mounted) {
-        final newAccount = await showModalBottomSheet<AccountEntity>(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (_) => const AddEditAccountDialog(),
-        );
-
-        if (newAccount != null && context.mounted) {
-          await getIt<CreateAccountUseCase>().call(newAccount);
-          final updatedAccounts = await getIt<GetAccountsUseCase>().call();
-          if (!context.mounted || updatedAccounts.isEmpty) return;
-
-          final result = await showModalBottomSheet<TransactionEntity>(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (_) => AddEditTransactionDialog(
-              transaction: transaction,
-              accounts: updatedAccounts,
-              categories: categories,
-            ),
-          );
-
-          if (result != null && context.mounted) {
-            bloc.add(CreateTransactionRequestedEvent(result));
-          }
-        }
-      }
-      return;
-    }
-
-    final result = await showModalBottomSheet<TransactionEntity>(
+    showModalBottomSheet<TransactionEntity>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => AddEditTransactionDialog(
         transaction: transaction,
-        accounts: accounts,
-        categories: categories,
       ),
-    );
-
-    if (result != null && context.mounted) {
-      if (transaction == null) {
-        bloc.add(CreateTransactionRequestedEvent(result));
-      } else {
-        bloc.add(UpdateTransactionRequestedEvent(result));
+    ).then((result) {
+      if (result != null && context.mounted) {
+        if (transaction == null) {
+          bloc.add(CreateTransactionRequestedEvent(result));
+        } else {
+          bloc.add(UpdateTransactionRequestedEvent(result));
+        }
       }
-    }
+    });
   }
 
   void _confirmDelete(BuildContext context, TransactionEntity transaction) {
@@ -146,7 +72,7 @@ class _TransactionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: Colors.transparent,
       appBar: AppAppBar(
         title: 'Transactions',
         actions: [
@@ -163,10 +89,11 @@ class _TransactionsView extends StatelessWidget {
         child: FloatingActionButton.extended(
           onPressed: () => _showAddEditDialog(context),
           backgroundColor: AppColors.primary,
-          icon: const Icon(Icons.add_rounded, color: Colors.white),
-          label: Text(
-            'Add Tx',
-            style: AppTypography.labelLarge.copyWith(color: Colors.white),
+          extendedPadding: const EdgeInsets.all(16),
+          label: const Icon(
+            Icons.add_rounded,
+            color: Colors.white,
+            size: 24,
           ),
         ),
       ),
@@ -296,8 +223,7 @@ class _TransactionsView extends StatelessWidget {
                                       context,
                                       transaction: tx,
                                     ),
-                                    onDelete: () =>
-                                        _confirmDelete(context, tx),
+                                    onDelete: () => _confirmDelete(context, tx),
                                   ),
                                 ),
                                 AppSpacing.vGapSM,

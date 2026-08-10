@@ -1,6 +1,7 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/budgets/domain/entities/budget_entity.dart';
 import 'package:dhanra_new/features/budgets/domain/entities/monthly_budget_summary_entity.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class BudgetSummaryHeroCard extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                '₹${summary.totalSpent.toStringAsFixed(0)}',
+                '${context.currencySymbol}${summary.totalSpent.toStringAsFixed(0)}',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -94,7 +95,7 @@ class BudgetSummaryHeroCard extends StatelessWidget {
                 ),
               ),
               Text(
-                ' / ₹${summary.totalLimit.toStringAsFixed(0)}',
+                ' / ${context.currencySymbol}${summary.totalLimit.toStringAsFixed(0)}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -131,7 +132,7 @@ class BudgetSummaryHeroCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '₹${summary.remainingBudget.toStringAsFixed(0)} ($pctSpent% spent)',
+                    '${context.currencySymbol}${summary.remainingBudget.toStringAsFixed(0)} ($pctSpent% spent)',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -159,7 +160,7 @@ class BudgetSummaryHeroCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '₹${summary.dailySafeSpend.toStringAsFixed(0)} / day',
+                      '${context.currencySymbol}${summary.dailySafeSpend.toStringAsFixed(0)} / day',
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,

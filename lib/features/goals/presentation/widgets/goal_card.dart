@@ -1,5 +1,6 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/goals/domain/entities/goal_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -179,7 +180,7 @@ class GoalCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '₹${goal.currentAmount.toStringAsFixed(0)} saved',
+                '${context.currencySymbol}${goal.currentAmount.toStringAsFixed(0)} saved',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -215,7 +216,7 @@ class GoalCard extends StatelessWidget {
               if (!goal.isCompleted &&
                   goal.suggestedMonthlyContribution > 0) ...[
                 Text(
-                  'Suggested: ₹${goal.suggestedMonthlyContribution.toStringAsFixed(0)} / month',
+                  'Suggested: ${context.currencySymbol}${goal.suggestedMonthlyContribution.toStringAsFixed(0)} / month',
                   style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,

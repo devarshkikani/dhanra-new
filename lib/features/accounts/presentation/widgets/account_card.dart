@@ -1,5 +1,6 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -118,7 +119,7 @@ class AccountCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '₹${account.balance.toStringAsFixed(2)}',
+                '${context.currencySymbol}${account.balance.toStringAsFixed(2)}',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -130,7 +131,7 @@ class AccountCard extends StatelessWidget {
               if (account.creditLimit != null) ...[
                 const SizedBox(height: 2),
                 Text(
-                  'Limit: ₹${account.creditLimit!.toStringAsFixed(0)}',
+                  'Limit: ${context.currencySymbol}${account.creditLimit!.toStringAsFixed(0)}',
                   style: const TextStyle(
                     fontSize: 11,
                     color: AppColors.textSecondary,

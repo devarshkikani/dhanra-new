@@ -28,14 +28,17 @@ class TransactionsLoadedState extends TransactionsState {
   final String searchQuery;
 
   List<TransactionEntity> get filteredTransactions {
-    return allTransactions.where((t) {
+    final list = allTransactions.where((t) {
       bool matchesFilter = true;
-      if (selectedFilter == 'EXPENSE')
+      if (selectedFilter == 'EXPENSE') {
         matchesFilter = t.type == TransactionType.expense;
-      if (selectedFilter == 'INCOME')
+      }
+      if (selectedFilter == 'INCOME') {
         matchesFilter = t.type == TransactionType.income;
-      if (selectedFilter == 'TRANSFER')
+      }
+      if (selectedFilter == 'TRANSFER') {
         matchesFilter = t.type == TransactionType.transfer;
+      }
 
       final matchesSearch = searchQuery.isEmpty ||
           t.title.toLowerCase().contains(searchQuery.toLowerCase()) ||
@@ -44,6 +47,9 @@ class TransactionsLoadedState extends TransactionsState {
 
       return matchesFilter && matchesSearch;
     }).toList();
+
+    list.sort((a, b) => b.date.compareTo(a.date));
+    return list;
   }
 
   Map<String, List<TransactionEntity>> get groupedByDate {

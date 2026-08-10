@@ -12,6 +12,7 @@ import 'package:dhanra_new/features/goals/presentation/widgets/add_contribution_
 import 'package:dhanra_new/features/goals/presentation/widgets/add_edit_goal_dialog.dart';
 import 'package:dhanra_new/features/goals/presentation/widgets/goal_card.dart';
 import 'package:dhanra_new/features/goals/presentation/widgets/goals_summary_hero_card.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -113,25 +114,20 @@ class _GoalsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      appBar: AppBar(
-        title: const Text('Savings Goals & Milestones'),
-        backgroundColor: AppColors.darkBackground,
-        elevation: 0,
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddEditGoalDialog(context),
-        backgroundColor: AppColors.primary,
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: const Text('New Goal',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.darkBackground,
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const AppAppBar(
+          title: 'Savings Goals & Milestones',
         ),
-        child: SafeArea(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => _showAddEditGoalDialog(context),
+          backgroundColor: AppColors.primary,
+          icon: const Icon(Icons.add_rounded, color: Colors.white),
+          label: const Text('New Goal',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ),
+        body: SafeArea(
           bottom: false,
           child: BlocBuilder<GoalsBloc, GoalsState>(
             builder: (context, state) {

@@ -1,5 +1,6 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:flutter/material.dart';
 
 class IncomeExpenseRow extends StatelessWidget {
@@ -47,7 +48,7 @@ class IncomeExpenseRow extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '₹${income.toStringAsFixed(0)}',
+                        '${context.currencySymbol}${income.toStringAsFixed(0)}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -95,7 +96,7 @@ class IncomeExpenseRow extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '₹${expense.toStringAsFixed(0)}',
+                        '${context.currencySymbol}${expense.toStringAsFixed(0)}',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

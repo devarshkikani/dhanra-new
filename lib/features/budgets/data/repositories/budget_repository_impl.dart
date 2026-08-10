@@ -48,7 +48,8 @@ class BudgetRepositoryImpl implements BudgetRepository {
 
   Future<void> _syncDashboardBudgetCard(double totalExpense) async {
     try {
-      final totalLimit = await _localDataSource.getTotalMonthlyLimit();
+      final effectiveLimit =
+          await _localDataSource.getEffectiveTotalMonthlyLimit();
       final currentDashboard = await _dashboardLocalDataSource.getSummary();
 
       final updatedSummary = DashboardSummaryModel(
@@ -59,7 +60,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
         savingsAmount: currentDashboard.savingsAmount,
         savingsRatePercentage: currentDashboard.savingsRatePercentage,
         budgetSpentAmount: totalExpense,
-        budgetTotalLimit: totalLimit,
+        budgetTotalLimit: effectiveLimit,
         recentTransactions: currentDashboard.recentTransactions,
         aiInsightSummary: currentDashboard.aiInsightSummary,
       );
@@ -70,7 +71,8 @@ class BudgetRepositoryImpl implements BudgetRepository {
 
   @override
   Future<MonthlyBudgetSummaryEntity> getMonthlySummary() async {
-    final totalLimit = await _localDataSource.getTotalMonthlyLimit();
+    final effectiveLimit =
+        await _localDataSource.getEffectiveTotalMonthlyLimit();
     final categoryModels = await _localDataSource.getCategoryBudgets();
     final transactions = await _transactionLocalDataSource.getTransactions();
 
@@ -82,7 +84,7 @@ class BudgetRepositoryImpl implements BudgetRepository {
     }
 
     return MonthlyBudgetSummaryEntity(
-      totalLimit: totalLimit,
+      totalLimit: effectiveLimit,
       totalSpent: totalExpense,
       categoryBudgets: categoryModels,
     );
@@ -108,11 +110,15 @@ class BudgetRepositoryImpl implements BudgetRepository {
   Future<BudgetEntity> saveCategoryBudget(BudgetEntity budget) async {
     final model = BudgetModel.fromEntity(budget);
     final saved = await _localDataSource.saveCategoryBudget(model);
+    final summary = await getMonthlySummary();
+    await _syncDashboardBudgetCard(summary.totalSpent);
     return saved;
   }
 
   @override
   Future<void> deleteCategoryBudget(String budgetId) async {
     await _localDataSource.deleteCategoryBudget(budgetId);
+    final summary = await getMonthlySummary();
+    await _syncDashboardBudgetCard(summary.totalSpent);
   }
 }

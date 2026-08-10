@@ -39,18 +39,10 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<SettingsBloc>(
-          create: (_) => getIt<SettingsBloc>()..add(const LoadSettingsEvent()),
-        ),
-        BlocProvider<AuthBloc>(
-          create: (_) =>
-              getIt<AuthBloc>()..add(const AuthCheckRequestedEvent()),
-        ),
-      ],
+    return BlocProvider<AuthBloc>(
+      create: (_) => getIt<AuthBloc>()..add(const AuthCheckRequestedEvent()),
       child: Scaffold(
-        backgroundColor: AppColors.darkBackground,
+        backgroundColor: Colors.transparent,
         appBar: const AppAppBar(
           title: 'Settings & Configuration',
         ),
@@ -75,9 +67,6 @@ class SettingsPage extends StatelessWidget {
               final currencyCode = (state is SettingsLoadedState)
                   ? state.settings.currencyCode
                   : 'INR';
-              final themeName = (state is SettingsLoadedState)
-                  ? state.settings.themePreference.displayName
-                  : 'Dark Mode';
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.only(
@@ -170,24 +159,6 @@ class SettingsPage extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              // Keep as it is we will use this later
-                              // Container(
-                              //   padding: const EdgeInsets.symmetric(
-                              //     horizontal: 10,
-                              //     vertical: 4,
-                              //   ),
-                              //   decoration: BoxDecoration(
-                              //     color: AppColors.secondary.withValues(alpha: 0.12),
-                              //     borderRadius: BorderRadius.circular(8),
-                              //   ),
-                              //   child: Text(
-                              //     'Pro Member',
-                              //     style: AppTypography.labelSmall.copyWith(
-                              //       fontWeight: FontWeight.bold,
-                              //       color: AppColors.secondary,
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           ),
                         );
@@ -239,9 +210,9 @@ class SettingsPage extends StatelessWidget {
                     ),
                     AppSpacing.vGapLG,
 
-                    // 3. System Preferences
+                    // 3. System & Preferences
                     Text(
-                      'System & Appearance',
+                      'System & Preferences',
                       style: AppTypography.labelSmall.copyWith(
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.8,
@@ -252,32 +223,11 @@ class SettingsPage extends StatelessWidget {
 
                     _buildSettingsTile(
                       context: context,
-                      icon: Icons.palette_rounded,
-                      color: AppColors.primary,
-                      title: 'Theme & Appearance',
-                      subtitle: 'Current: $themeName',
-                      onTap: () => context.push(AppRoutes.themeSettings),
-                    ),
-                    AppSpacing.vGapXS,
-
-                    _buildSettingsTile(
-                      context: context,
                       icon: Icons.currency_exchange_rounded,
                       color: AppColors.secondary,
                       title: 'Primary Currency',
                       subtitle: 'Selected: $currencyCode ($currencySymbol)',
                       onTap: () => context.push(AppRoutes.currencySettings),
-                    ),
-                    AppSpacing.vGapXS,
-
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.lock_outline_rounded,
-                      color: AppColors.credit,
-                      title: 'Security & App Lock',
-                      subtitle:
-                          'Configure secret PIN lock & biometric authentication',
-                      onTap: () => context.push(AppRoutes.securitySettings),
                     ),
                     AppSpacing.vGapXS,
 
@@ -292,7 +242,7 @@ class SettingsPage extends StatelessWidget {
                     ),
                     AppSpacing.vGapLG,
 
-                    // 4. Data Storage & Backup
+                    // 4. Data Storage & Legal
                     Text(
                       'Data Storage & Legal',
                       style: AppTypography.labelSmall.copyWith(
@@ -303,28 +253,28 @@ class SettingsPage extends StatelessWidget {
                     ),
                     AppSpacing.vGapSM,
 
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.cloud_sync_rounded,
-                      color: AppColors.secondary,
-                      title: 'Backup & Restore Data',
-                      subtitle:
-                          'Export encrypted JSON snapshot or restore database',
-                      onTap: () => context.push(AppRoutes.backupRestore),
-                    ),
-                    AppSpacing.vGapXS,
+                    // _buildSettingsTile(
+                    //   context: context,
+                    //   icon: Icons.cloud_sync_rounded,
+                    //   color: AppColors.secondary,
+                    //   title: 'Backup & Restore Data',
+                    //   subtitle:
+                    //       'Export encrypted JSON snapshot or restore database',
+                    //   onTap: () => context.push(AppRoutes.backupRestore),
+                    // ),
+                    // AppSpacing.vGapXS,
 
-                    _buildSettingsTile(
-                      context: context,
-                      icon: Icons.download_rounded,
-                      color: AppColors.credit,
-                      title: 'Export Transactions (CSV)',
-                      subtitle: 'Export transaction spreadsheet report',
-                      onTap: () => context
-                          .read<SettingsBloc>()
-                          .add(const ExportTransactionsCsvEvent()),
-                    ),
-                    AppSpacing.vGapXS,
+                    // _buildSettingsTile(
+                    //   context: context,
+                    //   icon: Icons.download_rounded,
+                    //   color: AppColors.credit,
+                    //   title: 'Export Transactions (CSV)',
+                    //   subtitle: 'Export transaction spreadsheet report',
+                    //   onTap: () => context
+                    //       .read<SettingsBloc>()
+                    //       .add(const ExportTransactionsCsvEvent()),
+                    // ),
+                    // AppSpacing.vGapXS,
 
                     _buildSettingsTile(
                       context: context,

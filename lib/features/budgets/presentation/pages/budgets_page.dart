@@ -10,6 +10,7 @@ import 'package:dhanra_new/features/budgets/presentation/widgets/add_edit_budget
 import 'package:dhanra_new/features/budgets/presentation/widgets/budget_summary_hero_card.dart';
 import 'package:dhanra_new/features/budgets/presentation/widgets/category_budget_card.dart';
 import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -99,28 +100,21 @@ class _BudgetsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      appBar: AppBar(
-        title: const Text('Budget Management'),
-        backgroundColor: AppColors.darkBackground,
-        elevation: 0,
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 75.0),
-        child: FloatingActionButton.extended(
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const AppAppBar(
+          title: 'Budget Management',
+        ),
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () => _showAddEditBudgetDialog(context),
           backgroundColor: AppColors.primary,
           icon: const Icon(Icons.add_rounded, color: Colors.white),
           label: const Text('Add Cap',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ),
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.darkBackground,
-        ),
-        child: SafeArea(
+        body: SafeArea(
           bottom: false,
           child: BlocBuilder<BudgetsBloc, BudgetsState>(
             builder: (context, state) {

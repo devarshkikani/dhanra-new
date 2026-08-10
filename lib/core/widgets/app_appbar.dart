@@ -9,6 +9,8 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final bool centerTitle;
 
+  final Color backgroundColor;
+
   const AppAppBar({
     super.key,
     this.title,
@@ -16,13 +18,15 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.centerTitle = true,
+    this.backgroundColor = Colors.transparent,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.darkBackground,
+      backgroundColor: backgroundColor,
       elevation: 0,
+      scrolledUnderElevation: 0,
       centerTitle: centerTitle,
       leading: leading,
       title: showLogo

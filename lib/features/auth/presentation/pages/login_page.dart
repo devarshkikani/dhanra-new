@@ -4,6 +4,7 @@ import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart' hide AppButton, AppTextField;
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_event.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_state.dart';
@@ -91,13 +92,10 @@ class _LoginPageState extends State<LoginPage>
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: AppColors.darkBackground,
-        body: Container(
-          decoration: const BoxDecoration(
-            color: AppColors.darkBackground,
-          ),
-          child: SafeArea(
+      child: AppBackground(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(

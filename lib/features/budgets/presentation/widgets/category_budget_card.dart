@@ -1,5 +1,6 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/budgets/domain/entities/budget_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -103,7 +104,7 @@ class CategoryBudgetCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      '₹${budget.spentAmount.toStringAsFixed(0)} of ₹${budget.limitAmount.toStringAsFixed(0)} spent',
+                      '${context.currencySymbol}${budget.spentAmount.toStringAsFixed(0)} of ${context.currencySymbol}${budget.limitAmount.toStringAsFixed(0)} spent',
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary,
@@ -189,7 +190,7 @@ class CategoryBudgetCard extends StatelessWidget {
                 ),
               ),
               Text(
-                'Remaining: ₹${budget.remainingAmount.toStringAsFixed(0)}',
+                'Remaining: ${context.currencySymbol}${budget.remainingAmount.toStringAsFixed(0)}',
                 style: const TextStyle(
                   fontSize: 11,
                   color: AppColors.textSecondary,

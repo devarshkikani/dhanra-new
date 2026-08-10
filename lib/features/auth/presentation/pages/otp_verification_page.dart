@@ -3,6 +3,7 @@ import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/router/app_router.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_gradients.dart';
+import 'package:dhanra_new/core/widgets/widgets.dart' hide AppButton;
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_event.dart';
 import 'package:dhanra_new/features/auth/presentation/bloc/auth_state.dart';
@@ -88,18 +89,13 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: AppColors.darkBackground,
-        appBar: AppBar(
-          title: const Text('Verify OTP'),
-          backgroundColor: AppColors.darkBackground,
-          elevation: 0,
-        ),
-        body: Container(
-          decoration: const BoxDecoration(
-            color: AppColors.darkBackground,
+      child: AppBackground(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: const AppAppBar(
+            title: 'Verify OTP',
           ),
-          child: SafeArea(
+          body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(

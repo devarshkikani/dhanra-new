@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:dhanra_new/features/categories/data/models/category_model.dart';
 import 'package:dhanra_new/features/categories/domain/entities/category_entity.dart';
 import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class CategoryLocalDataSource {
   Future<List<CategoryModel>> getCategories();
@@ -14,12 +16,56 @@ abstract class CategoryLocalDataSource {
 @LazySingleton(as: CategoryLocalDataSource)
 class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   CategoryLocalDataSourceImpl() {
-    _initSeedCategories();
+    _initFromPrefs();
   }
 
+  static const _storageKey = 'dhanra_categories_v1';
   final List<CategoryModel> _categories = [];
   final StreamController<List<CategoryModel>> _controller =
       StreamController<List<CategoryModel>>.broadcast();
+  bool _isLoaded = false;
+  Completer<void>? _initCompleter;
+
+  Future<void> _initFromPrefs() async {
+    if (_isLoaded) return;
+    if (_initCompleter != null) return _initCompleter!.future;
+    _initCompleter = Completer<void>();
+
+    try {
+      _initSeedCategories();
+      final prefs = await SharedPreferences.getInstance();
+      final rawJson = prefs.getString(_storageKey);
+      if (rawJson != null && rawJson.isNotEmpty) {
+        final List<dynamic> decoded = jsonDecode(rawJson) as List<dynamic>;
+        final userCategories = decoded
+            .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+
+        // Merge user custom categories without duplicating defaults
+        for (final cat in userCategories) {
+          final idx = _categories.indexWhere((c) => c.id == cat.id);
+          if (idx != -1) {
+            _categories[idx] = cat;
+          } else {
+            _categories.add(cat);
+          }
+        }
+      }
+    } catch (_) {
+    } finally {
+      _isLoaded = true;
+      _initCompleter?.complete();
+      _notifyListeners();
+    }
+  }
+
+  Future<void> _saveToPrefs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final rawJson = jsonEncode(_categories.map((c) => c.toJson()).toList());
+      await prefs.setString(_storageKey, rawJson);
+    } catch (_) {}
+  }
 
   void _initSeedCategories() {
     _categories.addAll([
@@ -149,27 +195,33 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
 
   @override
   Future<List<CategoryModel>> getCategories() async {
+    await _initFromPrefs();
     return List.unmodifiable(_categories);
   }
 
   @override
   Stream<List<CategoryModel>> watchCategories() async* {
+    await _initFromPrefs();
     yield List.unmodifiable(_categories);
     yield* _controller.stream;
   }
 
   @override
   Future<CategoryModel> createCategory(CategoryModel category) async {
+    await _initFromPrefs();
     _categories.add(category);
+    await _saveToPrefs();
     _notifyListeners();
     return category;
   }
 
   @override
   Future<CategoryModel> updateCategory(CategoryModel category) async {
+    await _initFromPrefs();
     final index = _categories.indexWhere((c) => c.id == category.id);
     if (index != -1) {
       _categories[index] = category;
+      await _saveToPrefs();
       _notifyListeners();
     }
     return category;
@@ -177,11 +229,13 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
 
   @override
   Future<void> deleteCategory(String categoryId) async {
+    await _initFromPrefs();
     _categories.removeWhere(
       (c) =>
           (c.id == categoryId || c.parentId == categoryId) &&
           !c.isSystemDefault,
     );
+    await _saveToPrefs();
     _notifyListeners();
   }
 }

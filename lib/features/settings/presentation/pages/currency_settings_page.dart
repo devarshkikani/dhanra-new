@@ -35,8 +35,9 @@ class CurrencySettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
+    return AppBackground(
+        child: Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: const AppAppBar(
         title: 'Primary Currency',
       ),
@@ -141,6 +142,6 @@ class CurrencySettingsPage extends StatelessWidget {
           },
         ),
       ),
-    );
+    ));
   }
 }

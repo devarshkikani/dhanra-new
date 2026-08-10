@@ -1,6 +1,7 @@
 import 'package:dhanra_new/core/common_widgets/app_button.dart';
 import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -135,7 +136,7 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
                   return DropdownMenuItem(
                     value: acc.id,
                     child: Text(
-                        '${acc.name} (₹${acc.balance.toStringAsFixed(0)})'),
+                        '${acc.name} (${context.currencySymbol}${acc.balance.toStringAsFixed(0)})'),
                   );
                 }).toList(),
                 onChanged: (val) {
@@ -171,7 +172,7 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
                   return DropdownMenuItem(
                     value: acc.id,
                     child: Text(
-                        '${acc.name} (₹${acc.balance.toStringAsFixed(0)})'),
+                        '${acc.name} (${context.currencySymbol}${acc.balance.toStringAsFixed(0)})'),
                   );
                 }).toList(),
                 onChanged: (val) {

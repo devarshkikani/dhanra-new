@@ -1,6 +1,7 @@
 import 'package:dhanra_new/core/common_widgets/app_button.dart';
 import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/budgets/domain/entities/budget_entity.dart';
 import 'package:dhanra_new/features/categories/domain/entities/category_entity.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +74,15 @@ class _AddEditBudgetDialogState extends State<AddEditBudgetDialog> {
         return;
       }
 
-      final category =
-          widget.categories.firstWhere((c) => c.id == _selectedCategoryId);
+      final matchingCats =
+          widget.categories.where((c) => c.id == _selectedCategoryId);
+      if (matchingCats.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select a valid category.')),
+        );
+        return;
+      }
+      final category = matchingCats.first;
 
       final budgetToReturn = BudgetEntity(
         id: widget.budget?.id ?? 'b_${DateTime.now().millisecondsSinceEpoch}',
@@ -177,8 +185,8 @@ class _AddEditBudgetDialogState extends State<AddEditBudgetDialog> {
                 AppTextField(
                   controller: _limitController,
                   label: isTotalMode
-                      ? 'Total Monthly Budget Limit (₹)'
-                      : 'Category Budget Cap (₹)',
+                      ? 'Total Monthly Budget Limit (${context.currencySymbol})'
+                      : 'Category Budget Cap (${context.currencySymbol})',
                   hintText: 'e.g. 15000',
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
