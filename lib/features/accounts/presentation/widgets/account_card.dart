@@ -1,6 +1,7 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/currency_extension.dart';
+import 'package:dhanra_new/core/utils/icon_color_utils.dart';
 import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -16,45 +17,10 @@ class AccountCard extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  IconData _getIconData(String iconName, AccountType type) {
-    switch (iconName) {
-      case 'account_balance':
-        return Icons.account_balance_rounded;
-      case 'account_balance_wallet':
-        return Icons.account_balance_wallet_rounded;
-      case 'payments':
-        return Icons.payments_rounded;
-      case 'credit_card':
-        return Icons.credit_card_rounded;
-      default:
-        switch (type) {
-          case AccountType.bank:
-            return Icons.account_balance_rounded;
-          case AccountType.wallet:
-            return Icons.account_balance_wallet_rounded;
-          case AccountType.cash:
-            return Icons.payments_rounded;
-          case AccountType.creditCard:
-            return Icons.credit_card_rounded;
-        }
-    }
-  }
-
-  Color _parseColor(String hex) {
-    try {
-      final buffer = StringBuffer();
-      if (hex.length == 6 || hex.length == 7) buffer.write('ff');
-      buffer.write(hex.replaceFirst('#', ''));
-      return Color(int.parse(buffer.toString(), radix: 16));
-    } catch (_) {
-      return AppColors.primary;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final themeColor = _parseColor(account.colorHex);
-    final icon = _getIconData(account.iconName, account.type);
+    final themeColor = IconColorUtils.parseHexColor(account.colorHex);
+    final icon = IconColorUtils.getAccountIconData(account.iconName, account.type);
 
     return GlassCard(
       margin: const EdgeInsets.only(bottom: 12),

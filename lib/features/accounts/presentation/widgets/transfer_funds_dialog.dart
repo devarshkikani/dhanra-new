@@ -4,6 +4,7 @@ import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
+import 'package:dhanra_new/features/accounts/presentation/widgets/account_selection_widget.dart';
 import 'package:flutter/material.dart';
 
 class TransferFundsDialog extends StatefulWidget {
@@ -111,60 +112,24 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
                 ],
               ),
               const SizedBox(height: 16),
-              const Text(
-                'From Account',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              AppDropdown<String>(
-                value: _fromAccountId,
-                prefixIcon: Icons.account_balance_wallet_rounded,
-                items: widget.accounts.map((acc) {
-                  return AppDropdownItem<String>(
-                    value: acc.id,
-                    label: acc.name,
-                    subtitle:
-                        'Balance: ${context.currencySymbol}${acc.balance.toStringAsFixed(0)}',
-                    icon: Icons.account_balance_wallet_rounded,
-                    iconColor: AppColors.primary,
-                  );
-                }).toList(),
-                onChanged: (val) {
+              InlineAccountQuickPicker(
+                label: 'From Account',
+                accounts: widget.accounts,
+                selectedAccountId: _fromAccountId,
+                onAccountSelected: (id) {
                   setState(() {
-                    _fromAccountId = val;
+                    _fromAccountId = id;
                   });
                 },
               ),
               const SizedBox(height: 16),
-              const Text(
-                'To Account',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              AppDropdown<String>(
-                value: _toAccountId,
-                prefixIcon: Icons.account_balance_wallet_rounded,
-                items: widget.accounts.map((acc) {
-                  return AppDropdownItem<String>(
-                    value: acc.id,
-                    label: acc.name,
-                    subtitle:
-                        'Balance: ${context.currencySymbol}${acc.balance.toStringAsFixed(0)}',
-                    icon: Icons.account_balance_wallet_rounded,
-                    iconColor: AppColors.secondary,
-                  );
-                }).toList(),
-                onChanged: (val) {
+              InlineAccountQuickPicker(
+                label: 'To Account',
+                accounts: widget.accounts,
+                selectedAccountId: _toAccountId,
+                onAccountSelected: (id) {
                   setState(() {
-                    _toAccountId = val;
+                    _toAccountId = id;
                   });
                 },
               ),

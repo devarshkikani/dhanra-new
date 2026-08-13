@@ -1,5 +1,4 @@
 import 'package:dhanra_new/core/common_widgets/app_button.dart';
-import 'package:dhanra_new/core/common_widgets/app_dropdown.dart';
 import 'package:dhanra_new/core/common_widgets/app_tab_bar.dart';
 import 'package:dhanra_new/core/common_widgets/app_text_field.dart';
 import 'package:dhanra_new/core/di/injection.dart';
@@ -9,8 +8,10 @@ import 'package:dhanra_new/core/theme/currency_extension.dart';
 import 'package:dhanra_new/core/widgets/widgets.dart' hide AppButton, AppTextField;
 import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
 import 'package:dhanra_new/features/accounts/domain/usecases/get_accounts_usecase.dart';
+import 'package:dhanra_new/features/accounts/presentation/widgets/account_selection_widget.dart';
 import 'package:dhanra_new/features/categories/domain/entities/category_entity.dart';
 import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
+import 'package:dhanra_new/features/categories/presentation/widgets/category_selection_widget.dart';
 import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:dhanra_new/features/transactions/domain/usecases/create_transaction_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/usecases/delete_transaction_usecase.dart';
@@ -377,127 +378,25 @@ class _AddEditTransactionPageState extends State<AddEditTransactionPage>
                         ),
                         const SizedBox(height: 16),
 
-                        // 3. Account Selector
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Account',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textSecondary),
-                            ),
-                            GestureDetector(
-                              onTap: () => context.push(AppRoutes.accounts),
-                              child: const Text(
-                                '+ Add Account',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            ),
-                          ],
+                        // 3. Account Quick-Picker (1-Tap Selection)
+                        InlineAccountQuickPicker(
+                          accounts: _accounts,
+                          selectedAccountId: _selectedAccountId,
+                          onAccountSelected: (id) {
+                            setState(() {
+                              _selectedAccountId = id;
+                            });
+                          },
                         ),
-                        const SizedBox(height: 6),
-                        if (_accounts.isEmpty) ...[
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppColors.warning.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color: AppColors.warning
-                                      .withValues(alpha: 0.3)),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.info_outline_rounded,
-                                    color: AppColors.warning, size: 20),
-                                const SizedBox(width: 8),
-                                const Expanded(
-                                  child: Text(
-                                    'No accounts available.',
-                                    style: TextStyle(
-                                        color: AppColors.textPrimary,
-                                        fontSize: 13),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () =>
-                                      context.push(AppRoutes.accounts),
-                                  child: const Text('Create Now',
-                                      style: TextStyle(
-                                          color: AppColors.primary,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ] else ...[
-                          AppDropdown<String>(
-                            value: _selectedAccountId,
-                            prefixIcon: Icons.account_balance_wallet_rounded,
-                            items: _accounts.map((acc) {
-                              return AppDropdownItem<String>(
-                                value: acc.id,
-                                label: acc.name,
-                                subtitle:
-                                    'Balance: ${context.currencySymbol}${acc.balance.toStringAsFixed(0)}',
-                                icon: Icons.account_balance_wallet_rounded,
-                                iconColor: AppColors.primary,
-                              );
-                            }).toList(),
-                            onChanged: (val) {
-                              setState(() {
-                                _selectedAccountId = val;
-                              });
-                            },
-                          ),
-                        ],
                         const SizedBox(height: 16),
 
-                        // 4. Category Selector
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Category',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textSecondary),
-                            ),
-                            GestureDetector(
-                              onTap: () => context.push(AppRoutes.categories),
-                              child: const Text(
-                                '⚙️ Manage',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.secondary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        AppDropdown<String>(
-                          value: _selectedCategoryId,
-                          prefixIcon: Icons.category_rounded,
-                          items: filteredCategories.map((cat) {
-                            return AppDropdownItem<String>(
-                              value: cat.id,
-                              label: cat.name,
-                              icon: Icons.pie_chart_rounded,
-                              iconColor: AppColors.secondary,
-                            );
-                          }).toList(),
-                          onChanged: (val) {
+                        // 4. Category Quick-Picker (1-Tap Selection)
+                        InlineCategoryQuickPicker(
+                          categories: filteredCategories,
+                          selectedCategoryId: _selectedCategoryId,
+                          onCategorySelected: (id) {
                             setState(() {
-                              _selectedCategoryId = val;
+                              _selectedCategoryId = id;
                             });
                           },
                         ),

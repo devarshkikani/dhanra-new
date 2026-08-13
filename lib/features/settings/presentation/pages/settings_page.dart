@@ -166,9 +166,9 @@ class SettingsPage extends StatelessWidget {
                     ),
                     AppSpacing.vGapLG,
 
-                    // 2. Financial & Categorization Rules
+                    // 2. Financial Accounts & Management
                     Text(
-                      'Preferences & Management',
+                      'Accounts & Financial Management',
                       style: AppTypography.labelSmall.copyWith(
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.8,
@@ -179,8 +179,19 @@ class SettingsPage extends StatelessWidget {
 
                     _buildSettingsTile(
                       context: context,
-                      icon: Icons.category_rounded,
+                      icon: Icons.account_balance_wallet_rounded,
                       color: AppColors.primary,
+                      title: 'Accounts & Wallets',
+                      subtitle:
+                          'Manage bank accounts, digital wallets, credit cards & balances',
+                      onTap: () => context.push(AppRoutes.accounts),
+                    ),
+                    AppSpacing.vGapXS,
+
+                    _buildSettingsTile(
+                      context: context,
+                      icon: Icons.category_rounded,
+                      color: AppColors.secondary,
                       title: 'Category Management',
                       subtitle:
                           'Manage income & expense categories, sub-categories, icons & colors',

@@ -2,8 +2,7 @@ import 'package:dhanra_new/core/di/injection.dart';
 import 'package:dhanra_new/core/services/notification_service.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
 import 'package:dhanra_new/core/theme/app_radius.dart';
-import 'package:dhanra_new/core/theme/app_spacing.dart';
-import 'package:dhanra_new/core/theme/app_typography.dart';
+
 import 'package:dhanra_new/features/accounts/domain/entities/account_entity.dart';
 import 'package:dhanra_new/features/accounts/domain/usecases/create_account_usecase.dart';
 import 'package:dhanra_new/features/accounts/domain/usecases/get_accounts_usecase.dart';
@@ -122,7 +121,7 @@ class _MainShellPageState extends State<MainShellPage> {
       },
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: Duration.zero,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
@@ -138,16 +137,6 @@ class _MainShellPageState extends State<MainShellPage> {
               color: isSelected ? AppColors.primary : AppColors.textSecondary,
               size: 20,
             ),
-            if (isSelected) ...[
-              AppSpacing.hGapXXS,
-              Text(
-                label,
-                style: AppTypography.labelMedium.copyWith(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
           ],
         ),
       ),

@@ -29,7 +29,7 @@ class IncomeVsExpenseChartCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Income vs Expense Trend',
+                'Trend',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,

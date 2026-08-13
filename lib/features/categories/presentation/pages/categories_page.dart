@@ -233,6 +233,14 @@ class _CategoriesView extends StatelessWidget {
                                     initialParentId: parentCat.id,
                                     initialType: parentCat.type,
                                   ),
+                                  onEditSubCategory: (subCat) =>
+                                      _showAddEditDialog(
+                                    context,
+                                    parentCategories: state.parentCategories,
+                                    category: subCat,
+                                  ),
+                                  onDeleteSubCategory: (subCat) =>
+                                      _confirmDelete(context, subCat),
                                 );
                               }),
                             ],

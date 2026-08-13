@@ -1,5 +1,6 @@
 import 'package:dhanra_new/core/common_widgets/glass_card.dart';
 import 'package:dhanra_new/core/theme/app_colors.dart';
+import 'package:dhanra_new/core/utils/icon_color_utils.dart';
 import 'package:dhanra_new/features/categories/domain/entities/category_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,8 @@ class CategoryTile extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.onAddSubCategory,
+    this.onEditSubCategory,
+    this.onDeleteSubCategory,
   });
 
   final CategoryEntity category;
@@ -18,57 +21,13 @@ class CategoryTile extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onAddSubCategory;
-
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'fastfood':
-        return Icons.fastfood_rounded;
-      case 'restaurant':
-        return Icons.restaurant_rounded;
-      case 'coffee':
-        return Icons.coffee_rounded;
-      case 'local_grocery_store':
-        return Icons.local_grocery_store_rounded;
-      case 'shopping_bag':
-        return Icons.shopping_bag_rounded;
-      case 'receipt_long':
-        return Icons.receipt_long_rounded;
-      case 'directions_car':
-        return Icons.directions_car_rounded;
-      case 'movie':
-        return Icons.movie_rounded;
-      case 'medical_services':
-        return Icons.medical_services_rounded;
-      case 'flight':
-        return Icons.flight_rounded;
-      case 'work':
-        return Icons.work_rounded;
-      case 'laptop_mac':
-        return Icons.laptop_mac_rounded;
-      case 'trending_up':
-        return Icons.trending_up_rounded;
-      case 'card_giftcard':
-        return Icons.card_giftcard_rounded;
-      default:
-        return Icons.category_rounded;
-    }
-  }
-
-  Color _parseColor(String hex) {
-    try {
-      final buffer = StringBuffer();
-      if (hex.length == 6 || hex.length == 7) buffer.write('ff');
-      buffer.write(hex.replaceFirst('#', ''));
-      return Color(int.parse(buffer.toString(), radix: 16));
-    } catch (_) {
-      return AppColors.primary;
-    }
-  }
+  final ValueChanged<CategoryEntity>? onEditSubCategory;
+  final ValueChanged<CategoryEntity>? onDeleteSubCategory;
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = _parseColor(category.colorHex);
-    final icon = _getIconData(category.iconName);
+    final themeColor = IconColorUtils.parseHexColor(category.colorHex);
+    final icon = IconColorUtils.getCategoryIconData(category.iconName);
 
     return GlassCard(
       margin: const EdgeInsets.only(bottom: 12),
@@ -173,7 +132,7 @@ class CategoryTile extends StatelessWidget {
                         Icon(Icons.edit_outlined,
                             size: 18, color: AppColors.textPrimary),
                         SizedBox(width: 8),
-                        Text('Edit',
+                        Text('Edit Category',
                             style: TextStyle(color: AppColors.textPrimary)),
                       ],
                     ),
@@ -186,7 +145,7 @@ class CategoryTile extends StatelessWidget {
                           Icon(Icons.delete_outline_rounded,
                               size: 18, color: AppColors.error),
                           SizedBox(width: 8),
-                          Text('Delete',
+                          Text('Delete Category',
                               style: TextStyle(color: AppColors.error)),
                         ],
                       ),
@@ -205,34 +164,60 @@ class CategoryTile extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 6,
                 children: subCategories.map((sub) {
-                  return Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: themeColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: themeColor.withValues(alpha: 0.25),
+                  final subColor =
+                      IconColorUtils.parseHexColor(sub.colorHex, fallback: themeColor);
+                  return InkWell(
+                    onTap: () => onEditSubCategory?.call(sub),
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: subColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: subColor.withValues(alpha: 0.25),
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _getIconData(sub.iconName),
-                          size: 14,
-                          color: themeColor,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          sub.name,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: themeColor,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            IconColorUtils.getCategoryIconData(sub.iconName),
+                            size: 14,
+                            color: subColor,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 6),
+                          Text(
+                            sub.name,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: subColor,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          GestureDetector(
+                            onTap: () => onEditSubCategory?.call(sub),
+                            child: Icon(
+                              Icons.edit_rounded,
+                              size: 12,
+                              color: subColor.withValues(alpha: 0.7),
+                            ),
+                          ),
+                          if (!sub.isSystemDefault) ...[
+                            const SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: () => onDeleteSubCategory?.call(sub),
+                              child: const Icon(
+                                Icons.close_rounded,
+                                size: 12,
+                                color: AppColors.error,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
