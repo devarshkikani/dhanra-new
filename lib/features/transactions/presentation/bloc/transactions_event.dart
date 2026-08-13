@@ -65,3 +65,25 @@ class DeleteTransactionRequestedEvent extends TransactionsEvent {
   @override
   List<Object?> get props => [transactionId];
 }
+
+class ApplyAdvancedTransactionFiltersEvent extends TransactionsEvent {
+  const ApplyAdvancedTransactionFiltersEvent({
+    this.selectedFilter = 'ALL',
+    this.selectedAccountId,
+    this.selectedCategoryId,
+    this.sortBy = 'NEWEST',
+  });
+
+  final String selectedFilter;
+  final String? selectedAccountId;
+  final String? selectedCategoryId;
+  final String sortBy;
+
+  @override
+  List<Object?> get props => [
+        selectedFilter,
+        selectedAccountId,
+        selectedCategoryId,
+        sortBy,
+      ];
+}

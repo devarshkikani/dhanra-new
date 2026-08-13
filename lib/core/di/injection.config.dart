@@ -193,13 +193,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i688.AccountLocalDataSourceImpl());
     gh.lazySingleton<_i887.PostRemoteDataSource>(
         () => _i887.PostRemoteDataSourceImpl(gh<_i361.Dio>()));
-    gh.lazySingleton<_i421.TransactionRepository>(
-        () => _i443.TransactionRepositoryImpl(
-              gh<_i371.TransactionLocalDataSource>(),
-              gh<_i688.AccountLocalDataSource>(),
-              gh<_i838.DashboardLocalDataSource>(),
-              gh<_i155.BudgetLocalDataSource>(),
-            ));
     gh.lazySingleton<_i292.AnalyticsLocalDataSource>(
         () => _i292.AnalyticsLocalDataSourceImpl());
     gh.lazySingleton<_i390.CategoryLocalDataSource>(
@@ -213,14 +206,6 @@ extension GetItInjectableX on _i174.GetIt {
             ));
     gh.lazySingleton<_i692.GoalLocalDataSource>(
         () => _i692.GoalLocalDataSourceImpl());
-    gh.lazySingleton<_i860.CreateTransactionUseCase>(() =>
-        _i860.CreateTransactionUseCase(gh<_i421.TransactionRepository>()));
-    gh.lazySingleton<_i623.DeleteTransactionUseCase>(() =>
-        _i623.DeleteTransactionUseCase(gh<_i421.TransactionRepository>()));
-    gh.lazySingleton<_i974.GetTransactionsUseCase>(
-        () => _i974.GetTransactionsUseCase(gh<_i421.TransactionRepository>()));
-    gh.lazySingleton<_i39.UpdateTransactionUseCase>(
-        () => _i39.UpdateTransactionUseCase(gh<_i421.TransactionRepository>()));
     gh.lazySingleton<_i112.GoalRepository>(() => _i942.GoalRepositoryImpl(
           gh<_i692.GoalLocalDataSource>(),
           gh<_i688.AccountLocalDataSource>(),
@@ -252,6 +237,13 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1027.GetGoalsSummaryUseCase(gh<_i112.GoalRepository>()));
     gh.lazySingleton<_i929.UpdateGoalUseCase>(
         () => _i929.UpdateGoalUseCase(gh<_i112.GoalRepository>()));
+    gh.lazySingleton<_i421.TransactionRepository>(
+        () => _i443.TransactionRepositoryImpl(
+              gh<_i371.TransactionLocalDataSource>(),
+              gh<_i688.AccountLocalDataSource>(),
+              gh<_i838.DashboardLocalDataSource>(),
+              gh<_i155.BudgetLocalDataSource>(),
+            ));
     gh.lazySingleton<_i279.DeleteCategoryBudgetUseCase>(
         () => _i279.DeleteCategoryBudgetUseCase(gh<_i1021.BudgetRepository>()));
     gh.lazySingleton<_i1001.GetMonthlyBudgetSummaryUseCase>(() =>
@@ -292,12 +284,6 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i652.DashboardBloc>(
         () => _i652.DashboardBloc(gh<_i1062.GetDashboardSummaryUseCase>()));
-    gh.factory<_i439.TransactionsBloc>(() => _i439.TransactionsBloc(
-          getTransactionsUseCase: gh<_i974.GetTransactionsUseCase>(),
-          createTransactionUseCase: gh<_i860.CreateTransactionUseCase>(),
-          updateTransactionUseCase: gh<_i39.UpdateTransactionUseCase>(),
-          deleteTransactionUseCase: gh<_i623.DeleteTransactionUseCase>(),
-        ));
     gh.lazySingleton<_i589.IAuthRepository>(() => _i153.AuthRepositoryImpl(
           gh<_i107.AuthRemoteDataSource>(),
           gh<_i852.AuthLocalDataSource>(),
@@ -333,6 +319,14 @@ extension GetItInjectableX on _i174.GetIt {
           deleteAccountUseCase: gh<_i1063.DeleteAccountUseCase>(),
           transferFundsUseCase: gh<_i248.TransferFundsUseCase>(),
         ));
+    gh.lazySingleton<_i860.CreateTransactionUseCase>(() =>
+        _i860.CreateTransactionUseCase(gh<_i421.TransactionRepository>()));
+    gh.lazySingleton<_i623.DeleteTransactionUseCase>(() =>
+        _i623.DeleteTransactionUseCase(gh<_i421.TransactionRepository>()));
+    gh.lazySingleton<_i974.GetTransactionsUseCase>(
+        () => _i974.GetTransactionsUseCase(gh<_i421.TransactionRepository>()));
+    gh.lazySingleton<_i39.UpdateTransactionUseCase>(
+        () => _i39.UpdateTransactionUseCase(gh<_i421.TransactionRepository>()));
     gh.factory<_i157.GoalsBloc>(() => _i157.GoalsBloc(
           getGoalsSummaryUseCase: gh<_i1027.GetGoalsSummaryUseCase>(),
           createGoalUseCase: gh<_i353.CreateGoalUseCase>(),
@@ -377,6 +371,13 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.lazySingleton<_i803.GetPostsUseCase>(
         () => _i803.GetPostsUseCase(gh<_i721.PostRepository>()));
+    gh.factory<_i439.TransactionsBloc>(() => _i439.TransactionsBloc(
+          getTransactionsUseCase: gh<_i974.GetTransactionsUseCase>(),
+          createTransactionUseCase: gh<_i860.CreateTransactionUseCase>(),
+          updateTransactionUseCase: gh<_i39.UpdateTransactionUseCase>(),
+          deleteTransactionUseCase: gh<_i623.DeleteTransactionUseCase>(),
+          getCategoriesUseCase: gh<_i76.GetCategoriesUseCase>(),
+        ));
     gh.factory<_i601.PostBloc>(
         () => _i601.PostBloc(gh<_i803.GetPostsUseCase>()));
     gh.factory<_i78.CategoriesBloc>(() => _i78.CategoriesBloc(

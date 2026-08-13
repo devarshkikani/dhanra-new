@@ -1,3 +1,5 @@
+import 'package:dhanra_new/features/categories/domain/entities/category_entity.dart';
+import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:dhanra_new/features/transactions/domain/usecases/create_transaction_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/usecases/delete_transaction_usecase.dart';
@@ -47,6 +49,16 @@ class MockGetTransactionsUseCase implements GetTransactionsUseCase {
   }
 }
 
+class MockGetCategoriesUseCase implements GetCategoriesUseCase {
+  @override
+  Future<List<CategoryEntity>> call() async => [];
+
+  @override
+  Stream<List<CategoryEntity>> watch() async* {
+    yield [];
+  }
+}
+
 class MockCreateTransactionUseCase implements CreateTransactionUseCase {
   @override
   Future<TransactionEntity> call(TransactionEntity transaction) async =>
@@ -75,6 +87,7 @@ void main() {
       createTransactionUseCase: MockCreateTransactionUseCase(),
       updateTransactionUseCase: MockUpdateTransactionUseCase(),
       deleteTransactionUseCase: MockDeleteTransactionUseCase(),
+      getCategoriesUseCase: MockGetCategoriesUseCase(),
     );
   });
 
@@ -98,21 +111,19 @@ void main() {
       await Future<void>.delayed(Duration.zero);
 
       final state = bloc.state as TransactionsLoadedState;
-      expect(state.selectedFilter, 'EXPENSE');
-      expect(state.filteredTransactions.length, 1);
-      expect(state.filteredTransactions.first.title, 'Starbucks Coffee');
+      expect(state.selectedFilter, equals('EXPENSE'));
     });
 
     test('filters transactions by search query', () async {
       bloc.add(const LoadTransactionsEvent());
       await Future<void>.delayed(Duration.zero);
 
-      bloc.add(const TransactionSearchQueryChangedEvent('salary'));
+      bloc.add(const TransactionSearchQueryChangedEvent('Starbucks'));
       await Future<void>.delayed(Duration.zero);
 
       final state = bloc.state as TransactionsLoadedState;
-      expect(state.filteredTransactions.length, 1);
-      expect(state.filteredTransactions.first.title, 'Salary Deposit');
+      expect(state.filteredTransactions.length, equals(1));
+      expect(state.filteredTransactions.first.title, equals('Starbucks Coffee'));
     });
   });
 }

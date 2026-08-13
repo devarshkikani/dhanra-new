@@ -95,127 +95,130 @@ class _AccountsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: const AppAppBar(
-        title: 'Accounts & Wallets',
-      ),
-      body: SafeArea(
-        bottom: false,
-        child: BlocBuilder<AccountsBloc, AccountsState>(
-          builder: (context, state) {
-            if (state is AccountsLoadingState ||
-                state is AccountsInitialState) {
-              return const AppLoading(message: 'Loading accounts...');
-            }
+    return AppBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: const AppAppBar(
+          title: 'Accounts & Wallets',
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: BlocBuilder<AccountsBloc, AccountsState>(
+            builder: (context, state) {
+              if (state is AccountsLoadingState ||
+                  state is AccountsInitialState) {
+                return const AppLoading(message: 'Loading accounts...');
+              }
 
-            if (state is AccountsErrorState) {
-              return AppErrorState(
-                errorMessage: state.errorMessage,
-                onRetry: () => context
-                    .read<AccountsBloc>()
-                    .add(const LoadAccountsEvent()),
-              );
-            }
+              if (state is AccountsErrorState) {
+                return AppErrorState(
+                  errorMessage: state.errorMessage,
+                  onRetry: () => context
+                      .read<AccountsBloc>()
+                      .add(const LoadAccountsEvent()),
+                );
+              }
 
-            if (state is AccountsLoadedState) {
-              final accounts = state.accounts;
+              if (state is AccountsLoadedState) {
+                final accounts = state.accounts;
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.only(
-                  left: AppSpacing.md,
-                  right: AppSpacing.md,
-                  top: AppSpacing.xs,
-                  bottom: 110,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 1. Net Worth Header Card
-                    AppCard(
-                      variant: AppCardVariant.hero,
-                      padding: AppSpacing.paddingMD,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'TOTAL NET WORTH',
-                            style: AppTypography.labelSmall.copyWith(
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          AppSpacing.vGapXS,
-                          Text(
-                            '₹${state.netWorth.toStringAsFixed(2)}',
-                            style: AppTypography.displayMedium.copyWith(
-                              color: Colors.white,
-                            ),
-                          ),
-                          AppSpacing.vGapMD,
-                          Row(
-                            children: [
-                              Expanded(
-                                child: AppButton(
-                                  title: 'Transfer',
-                                  icon: Icons.swap_horiz_rounded,
-                                  height: 44,
-                                  onPressed: () =>
-                                      _showTransferDialog(context, accounts),
-                                ),
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.only(
+                    left: AppSpacing.md,
+                    right: AppSpacing.md,
+                    top: AppSpacing.xs,
+                    bottom: 110,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 1. Net Worth Header Card
+                      AppCard(
+                        variant: AppCardVariant.hero,
+                        padding: AppSpacing.paddingMD,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'TOTAL NET WORTH',
+                              style: AppTypography.labelSmall.copyWith(
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                                color: AppColors.textSecondary,
                               ),
-                              AppSpacing.hGapSM,
-                              Expanded(
-                                child: AppButton(
-                                  title: 'Add Account',
-                                  variant: AppButtonVariant.secondary,
-                                  icon: Icons.add_rounded,
-                                  height: 44,
-                                  onPressed: () =>
-                                      _showAddEditDialog(context),
-                                ),
+                            ),
+                            AppSpacing.vGapXS,
+                            Text(
+                              '₹${state.netWorth.toStringAsFixed(2)}',
+                              style: AppTypography.displayMedium.copyWith(
+                                color: Colors.white,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    AppSpacing.vGapLG,
-
-                    // 2. Accounts List Grouped by Type
-                    Text(
-                      'Your Accounts',
-                      style: AppTypography.headlineSmall.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    AppSpacing.vGapSM,
-
-                    if (accounts.isEmpty) ...[
-                      AppEmptyState(
-                        title: 'No Accounts Added',
-                        message: 'Tap "Add Account" to manage your bank accounts & wallets.',
-                        buttonText: 'Add Account',
-                        onAction: () => _showAddEditDialog(context),
-                      ),
-                    ] else ...[
-                      ...accounts.map(
-                        (acc) => AccountCard(
-                          account: acc,
-                          onEdit: () =>
-                              _showAddEditDialog(context, account: acc),
-                          onDelete: () => _confirmDelete(context, acc),
+                            ),
+                            AppSpacing.vGapMD,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: AppButton(
+                                    title: 'Transfer',
+                                    icon: Icons.swap_horiz_rounded,
+                                    height: 44,
+                                    onPressed: () =>
+                                        _showTransferDialog(context, accounts),
+                                  ),
+                                ),
+                                AppSpacing.hGapSM,
+                                Expanded(
+                                  child: AppButton(
+                                    title: 'Add Account',
+                                    variant: AppButtonVariant.secondary,
+                                    icon: Icons.add_rounded,
+                                    height: 44,
+                                    onPressed: () =>
+                                        _showAddEditDialog(context),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ],
-                ),
-              );
-            }
+                      AppSpacing.vGapLG,
 
-            return const SizedBox.shrink();
-          },
+                      // 2. Accounts List Grouped by Type
+                      Text(
+                        'Your Accounts',
+                        style: AppTypography.headlineSmall.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      AppSpacing.vGapSM,
+
+                      if (accounts.isEmpty) ...[
+                        AppEmptyState(
+                          title: 'No Accounts Added',
+                          message:
+                              'Tap "Add Account" to manage your bank accounts & wallets.',
+                          buttonText: 'Add Account',
+                          onAction: () => _showAddEditDialog(context),
+                        ),
+                      ] else ...[
+                        ...accounts.map(
+                          (acc) => AccountCard(
+                            account: acc,
+                            onEdit: () =>
+                                _showAddEditDialog(context, account: acc),
+                            onDelete: () => _confirmDelete(context, acc),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );

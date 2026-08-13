@@ -29,7 +29,7 @@ class _MainShellPageState extends State<MainShellPage> {
     const DashboardPage(),
     const TransactionsPage(),
     const AnalyticsPage(),
-    const AccountsPage(),
+    // const AccountsPage(),
     const SettingsPage(),
   ];
 
@@ -97,9 +97,9 @@ class _MainShellPageState extends State<MainShellPage> {
                     Icons.receipt_long_outlined, 'Txns'),
                 _buildNavItem(2, Icons.bar_chart_rounded,
                     Icons.bar_chart_outlined, 'Analytics'),
-                _buildNavItem(3, Icons.account_balance_wallet_rounded,
-                    Icons.account_balance_wallet_outlined, 'Accounts'),
-                _buildNavItem(4, Icons.settings_rounded,
+                // _buildNavItem(3, Icons.account_balance_wallet_rounded,
+                //     Icons.account_balance_wallet_outlined, 'Accounts'),
+                _buildNavItem(3, Icons.settings_rounded,
                     Icons.settings_outlined, 'Settings'),
               ],
             ),

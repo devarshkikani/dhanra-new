@@ -1,3 +1,4 @@
+import 'package:dhanra_new/features/categories/domain/entities/category_entity.dart';
 import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -19,36 +20,83 @@ class TransactionsLoadingState extends TransactionsState {
 class TransactionsLoadedState extends TransactionsState {
   const TransactionsLoadedState({
     required this.allTransactions,
+    this.categories = const [],
     this.selectedFilter = 'ALL',
     this.searchQuery = '',
+    this.selectedAccountId,
+    this.selectedCategoryId,
+    this.sortBy = 'NEWEST',
   });
 
   final List<TransactionEntity> allTransactions;
+  final List<CategoryEntity> categories;
   final String selectedFilter; // 'ALL', 'EXPENSE', 'INCOME', 'TRANSFER'
   final String searchQuery;
+  final String? selectedAccountId;
+  final String? selectedCategoryId;
+  final String sortBy; // 'NEWEST', 'OLDEST', 'HIGHEST', 'LOWEST'
+
+  bool get hasActiveFilters =>
+      selectedFilter != 'ALL' ||
+      selectedAccountId != null ||
+      selectedCategoryId != null ||
+      sortBy != 'NEWEST';
 
   List<TransactionEntity> get filteredTransactions {
     final list = allTransactions.where((t) {
-      bool matchesFilter = true;
+      bool matchesType = true;
       if (selectedFilter == 'EXPENSE') {
-        matchesFilter = t.type == TransactionType.expense;
+        matchesType = t.type == TransactionType.expense;
+      } else if (selectedFilter == 'INCOME') {
+        matchesType = t.type == TransactionType.income;
+      } else if (selectedFilter == 'TRANSFER') {
+        matchesType = t.type == TransactionType.transfer;
       }
-      if (selectedFilter == 'INCOME') {
-        matchesFilter = t.type == TransactionType.income;
-      }
-      if (selectedFilter == 'TRANSFER') {
-        matchesFilter = t.type == TransactionType.transfer;
+
+      final matchesAccount =
+          selectedAccountId == null || t.accountId == selectedAccountId;
+
+      bool matchesCategory = true;
+      if (selectedCategoryId != null && selectedCategoryId!.isNotEmpty) {
+        final matchingCategoryIds = <String>{selectedCategoryId!};
+        CategoryEntity? selectedCatObj;
+
+        for (final cat in categories) {
+          if (cat.id == selectedCategoryId) {
+            selectedCatObj = cat;
+          }
+          if (cat.parentId == selectedCategoryId) {
+            matchingCategoryIds.add(cat.id);
+          }
+        }
+
+        matchesCategory = matchingCategoryIds.contains(t.categoryId) ||
+            t.categoryId == selectedCategoryId ||
+            (selectedCatObj != null &&
+                selectedCatObj.name.isNotEmpty &&
+                t.categoryName.toLowerCase() ==
+                    selectedCatObj.name.toLowerCase());
       }
 
       final matchesSearch = searchQuery.isEmpty ||
           t.title.toLowerCase().contains(searchQuery.toLowerCase()) ||
           (t.notes != null &&
-              t.notes!.toLowerCase().contains(searchQuery.toLowerCase()));
+              t.notes!.toLowerCase().contains(searchQuery.toLowerCase())) ||
+          t.categoryName.toLowerCase().contains(searchQuery.toLowerCase());
 
-      return matchesFilter && matchesSearch;
+      return matchesType && matchesAccount && matchesCategory && matchesSearch;
     }).toList();
 
-    list.sort((a, b) => b.date.compareTo(a.date));
+    if (sortBy == 'OLDEST') {
+      list.sort((a, b) => a.date.compareTo(b.date));
+    } else if (sortBy == 'HIGHEST') {
+      list.sort((a, b) => b.amount.compareTo(a.amount));
+    } else if (sortBy == 'LOWEST') {
+      list.sort((a, b) => a.amount.compareTo(b.amount));
+    } else {
+      list.sort((a, b) => b.date.compareTo(a.date));
+    }
+
     return list;
   }
 
@@ -96,18 +144,40 @@ class TransactionsLoadedState extends TransactionsState {
 
   TransactionsLoadedState copyWith({
     List<TransactionEntity>? allTransactions,
+    List<CategoryEntity>? categories,
     String? selectedFilter,
     String? searchQuery,
+    bool clearAccountId = false,
+    String? selectedAccountId,
+    bool clearCategoryId = false,
+    String? selectedCategoryId,
+    String? sortBy,
   }) {
     return TransactionsLoadedState(
       allTransactions: allTransactions ?? this.allTransactions,
+      categories: categories ?? this.categories,
       selectedFilter: selectedFilter ?? this.selectedFilter,
       searchQuery: searchQuery ?? this.searchQuery,
+      selectedAccountId: clearAccountId
+          ? null
+          : (selectedAccountId ?? this.selectedAccountId),
+      selectedCategoryId: clearCategoryId
+          ? null
+          : (selectedCategoryId ?? this.selectedCategoryId),
+      sortBy: sortBy ?? this.sortBy,
     );
   }
 
   @override
-  List<Object?> get props => [allTransactions, selectedFilter, searchQuery];
+  List<Object?> get props => [
+        allTransactions,
+        categories,
+        selectedFilter,
+        searchQuery,
+        selectedAccountId,
+        selectedCategoryId,
+        sortBy,
+      ];
 }
 
 class TransactionsErrorState extends TransactionsState {

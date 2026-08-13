@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dhanra_new/features/categories/domain/usecases/get_categories_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:dhanra_new/features/transactions/domain/usecases/create_transaction_usecase.dart';
 import 'package:dhanra_new/features/transactions/domain/usecases/delete_transaction_usecase.dart';
@@ -16,15 +17,18 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     required CreateTransactionUseCase createTransactionUseCase,
     required UpdateTransactionUseCase updateTransactionUseCase,
     required DeleteTransactionUseCase deleteTransactionUseCase,
+    required GetCategoriesUseCase getCategoriesUseCase,
   })  : _getTransactionsUseCase = getTransactionsUseCase,
         _createTransactionUseCase = createTransactionUseCase,
         _updateTransactionUseCase = updateTransactionUseCase,
         _deleteTransactionUseCase = deleteTransactionUseCase,
+        _getCategoriesUseCase = getCategoriesUseCase,
         super(const TransactionsInitialState()) {
     on<LoadTransactionsEvent>(_onLoadTransactions);
     on<TransactionsUpdatedEvent>(_onTransactionsUpdated);
     on<TransactionTypeFilterChangedEvent>(_onFilterChanged);
     on<TransactionSearchQueryChangedEvent>(_onSearchQueryChanged);
+    on<ApplyAdvancedTransactionFiltersEvent>(_onApplyAdvancedFilters);
     on<CreateTransactionRequestedEvent>(_onCreateTransaction);
     on<UpdateTransactionRequestedEvent>(_onUpdateTransaction);
     on<DeleteTransactionRequestedEvent>(_onDeleteTransaction);
@@ -40,6 +44,7 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
   final CreateTransactionUseCase _createTransactionUseCase;
   final UpdateTransactionUseCase _updateTransactionUseCase;
   final DeleteTransactionUseCase _deleteTransactionUseCase;
+  final GetCategoriesUseCase _getCategoriesUseCase;
 
   StreamSubscription<List<TransactionEntity>>? _subscription;
 
@@ -50,21 +55,32 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     emit(const TransactionsLoadingState());
     try {
       final transactions = await _getTransactionsUseCase();
-      emit(TransactionsLoadedState(allTransactions: transactions));
+      final categories = await _getCategoriesUseCase();
+      emit(TransactionsLoadedState(
+        allTransactions: transactions,
+        categories: categories,
+      ));
     } catch (e) {
       emit(TransactionsErrorState(e.toString()));
     }
   }
 
-  void _onTransactionsUpdated(
+  Future<void> _onTransactionsUpdated(
     TransactionsUpdatedEvent event,
     Emitter<TransactionsState> emit,
-  ) {
+  ) async {
+    final categories = await _getCategoriesUseCase();
     if (state is TransactionsLoadedState) {
       final current = state as TransactionsLoadedState;
-      emit(current.copyWith(allTransactions: event.transactions));
+      emit(current.copyWith(
+        allTransactions: event.transactions,
+        categories: categories,
+      ));
     } else {
-      emit(TransactionsLoadedState(allTransactions: event.transactions));
+      emit(TransactionsLoadedState(
+        allTransactions: event.transactions,
+        categories: categories,
+      ));
     }
   }
 
@@ -85,6 +101,23 @@ class TransactionsBloc extends Bloc<TransactionsEvent, TransactionsState> {
     if (state is TransactionsLoadedState) {
       final current = state as TransactionsLoadedState;
       emit(current.copyWith(searchQuery: event.searchQuery));
+    }
+  }
+
+  void _onApplyAdvancedFilters(
+    ApplyAdvancedTransactionFiltersEvent event,
+    Emitter<TransactionsState> emit,
+  ) {
+    if (state is TransactionsLoadedState) {
+      final current = state as TransactionsLoadedState;
+      emit(current.copyWith(
+        selectedFilter: event.selectedFilter,
+        clearAccountId: event.selectedAccountId == null,
+        selectedAccountId: event.selectedAccountId,
+        clearCategoryId: event.selectedCategoryId == null,
+        selectedCategoryId: event.selectedCategoryId,
+        sortBy: event.sortBy,
+      ));
     }
   }
 

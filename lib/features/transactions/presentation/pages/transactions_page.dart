@@ -8,11 +8,10 @@ import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_event.dart';
 import 'package:dhanra_new/features/transactions/presentation/bloc/transactions_state.dart';
 import 'package:dhanra_new/features/transactions/presentation/pages/add_edit_transaction_page.dart';
+import 'package:dhanra_new/features/transactions/presentation/widgets/transaction_filter_bottom_sheet.dart';
 import 'package:dhanra_new/features/transactions/presentation/widgets/transaction_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dhanra_new/core/router/app_router.dart';
-import 'package:go_router/go_router.dart';
 
 class TransactionsPage extends StatelessWidget {
   const TransactionsPage({super.key});
@@ -51,6 +50,35 @@ class _TransactionsView extends StatelessWidget {
     });
   }
 
+  Future<void> _openFilterSheet(
+    BuildContext context,
+    TransactionsLoadedState state,
+  ) async {
+    final bloc = context.read<TransactionsBloc>();
+    final result = await showModalBottomSheet<TransactionFilterResult>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => TransactionFilterBottomSheet(
+        initialFilter: state.selectedFilter,
+        initialAccountId: state.selectedAccountId,
+        initialCategoryId: state.selectedCategoryId,
+        initialSortBy: state.sortBy,
+      ),
+    );
+
+    if (result != null && context.mounted) {
+      bloc.add(
+        ApplyAdvancedTransactionFiltersEvent(
+          selectedFilter: result.selectedFilter,
+          selectedAccountId: result.selectedAccountId,
+          selectedCategoryId: result.selectedCategoryId,
+          sortBy: result.sortBy,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,11 +86,43 @@ class _TransactionsView extends StatelessWidget {
       appBar: AppAppBar(
         title: 'Transactions',
         actions: [
-          IconButton(
-            icon:
-                const Icon(Icons.tune_rounded, color: AppColors.textSecondary),
-            tooltip: 'Manage Categories',
-            onPressed: () => context.push(AppRoutes.categories),
+          BlocBuilder<TransactionsBloc, TransactionsState>(
+            builder: (context, state) {
+              final hasFilters =
+                  state is TransactionsLoadedState && state.hasActiveFilters;
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.tune_rounded,
+                      color: hasFilters
+                          ? AppColors.primary
+                          : AppColors.textSecondary,
+                    ),
+                    tooltip: 'Filter Transactions',
+                    onPressed: () {
+                      if (state is TransactionsLoadedState) {
+                        _openFilterSheet(context, state);
+                      }
+                    },
+                  ),
+                  if (hasFilters)
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -160,60 +220,58 @@ class _TransactionsView extends StatelessWidget {
                       ],
                     ),
                   ),
-                  AppSpacing.vGapMD,
+                  AppSpacing.vGapSM,
 
-                  // 3. Transactions Grouped List
+                  // 3. Transactions List grouped by date
                   Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.only(
-                        left: AppSpacing.md,
-                        right: AppSpacing.md,
-                        bottom: 120,
-                      ),
-                      children: [
-                        if (grouped.isEmpty) ...[
-                          const AppEmptyState(
-                            title: 'No Transactions',
+                    child: grouped.isEmpty
+                        ? const AppEmptyState(
+                            icon: Icons.receipt_long_rounded,
+                            title: 'No Transactions Found',
                             message:
-                                'No transactions found matching your search.',
-                          ),
-                        ] else ...[
-                          ...grouped.entries.map((entry) {
-                            final dateHeader = entry.key;
-                            final list = entry.value;
+                                'Try adjusting your search query or filters.',
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.only(
+                              left: AppSpacing.md,
+                              right: AppSpacing.md,
+                              bottom: 110,
+                            ),
+                            itemCount: grouped.keys.length,
+                            itemBuilder: (context, index) {
+                              final dateHeader =
+                                  grouped.keys.elementAt(index);
+                              final txs = grouped[dateHeader]!;
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: AppSpacing.xs,
-                                  ),
-                                  child: Text(
-                                    dateHeader,
-                                    style: AppTypography.labelSmall.copyWith(
-                                      color: AppColors.textSecondary,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.5,
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: AppSpacing.xs,
+                                    ),
+                                    child: Text(
+                                      dateHeader,
+                                      style:
+                                          AppTypography.labelMedium.copyWith(
+                                        color: AppColors.textSecondary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                ...list.map(
-                                  (tx) => TransactionItemCard(
-                                    transaction: tx,
-                                    onTap: () => _openAddEditPage(
-                                      context,
+                                  ...txs.map(
+                                    (tx) => TransactionItemCard(
                                       transaction: tx,
+                                      onTap: () => _openAddEditPage(
+                                        context,
+                                        transaction: tx,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                AppSpacing.vGapSM,
-                              ],
-                            );
-                          }),
-                        ],
-                      ],
-                    ),
+                                ],
+                              );
+                            },
+                          ),
                   ),
                 ],
               );
