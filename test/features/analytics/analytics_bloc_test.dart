@@ -32,6 +32,9 @@ class MockGetAnalyticsDataUseCase implements GetAnalyticsDataUseCase {
         cashFlow: 96450,
       ),
     ],
+    savingsRate: 79.6,
+    peakSpendDay: 'Sun, Aug 10',
+    peakSpendAmount: 4500,
   );
 
   @override
@@ -84,12 +87,25 @@ void main() {
       final state = bloc.state as AnalyticsLoadedState;
       expect(state.data.totalIncome, 140000);
       expect(state.data.topExpenseCategory, 'Shopping');
+      expect(state.data.savingsRate, 79.6);
     });
 
-    test('switches time range filter correctly', () async {
+    test('switches time range filter to weekly and yearly correctly', () async {
       bloc.add(const TimeRangeChangedEvent(AnalyticsTimeRange.weekly));
       await Future<void>.delayed(Duration.zero);
+      expect(bloc.state, isA<AnalyticsLoadedState>());
 
+      bloc.add(const TimeRangeChangedEvent(AnalyticsTimeRange.yearly));
+      await Future<void>.delayed(Duration.zero);
+      expect(bloc.state, isA<AnalyticsLoadedState>());
+    });
+
+    test('handles CustomDateRangeSelectedEvent correctly', () async {
+      bloc.add(CustomDateRangeSelectedEvent(
+        startDate: DateTime(2026, 1, 1),
+        endDate: DateTime(2026, 6, 30),
+      ));
+      await Future<void>.delayed(Duration.zero);
       expect(bloc.state, isA<AnalyticsLoadedState>());
     });
   });

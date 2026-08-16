@@ -71,11 +71,19 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
     _categories.addAll([
       // Expense Categories
       const CategoryModel(
+        id: 'cat_bills',
+        name: 'Bills & Utilities',
+        type: CategoryType.expense,
+        iconName: 'receipt_long',
+        colorHex: '#50C2E5', // Glacier Blue
+        isSystemDefault: true,
+      ),
+      const CategoryModel(
         id: 'cat_food',
         name: 'Food & Dining',
         type: CategoryType.expense,
         iconName: 'fastfood',
-        colorHex: '#9B5DE5',
+        colorHex: '#A8F3D0', // Cyber Mint
         isSystemDefault: true,
       ),
       const CategoryModel(
@@ -83,7 +91,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         name: 'Restaurants',
         type: CategoryType.expense,
         iconName: 'restaurant',
-        colorHex: '#9B5DE5',
+        colorHex: '#A8F3D0', // Cyber Mint
         parentId: 'cat_food',
         isSystemDefault: true,
       ),
@@ -92,7 +100,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         name: 'Coffee Shops',
         type: CategoryType.expense,
         iconName: 'coffee',
-        colorHex: '#9B5DE5',
+        colorHex: '#A8F3D0', // Cyber Mint
         parentId: 'cat_food',
         isSystemDefault: true,
       ),
@@ -101,55 +109,71 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         name: 'Groceries',
         type: CategoryType.expense,
         iconName: 'local_grocery_store',
-        colorHex: '#00F5D4',
-        isSystemDefault: true,
-      ),
-      const CategoryModel(
-        id: 'cat_shopping',
-        name: 'Shopping',
-        type: CategoryType.expense,
-        iconName: 'shopping_bag',
-        colorHex: '#FFA500',
-        isSystemDefault: true,
-      ),
-      const CategoryModel(
-        id: 'cat_bills',
-        name: 'Bills & Utilities',
-        type: CategoryType.expense,
-        iconName: 'receipt_long',
-        colorHex: '#FF5252',
-        isSystemDefault: true,
-      ),
-      const CategoryModel(
-        id: 'cat_transport',
-        name: 'Transportation',
-        type: CategoryType.expense,
-        iconName: 'directions_car',
-        colorHex: '#448AFF',
+        colorHex: '#A8F3D0', // Cyber Mint
         isSystemDefault: true,
       ),
       const CategoryModel(
         id: 'cat_entertainment',
-        name: 'Entertainment',
+        name: 'Entertainment & Leisure',
         type: CategoryType.expense,
         iconName: 'movie',
-        colorHex: '#E040FB',
+        colorHex: '#9D4EDD', // Amethyst Purple
+        isSystemDefault: true,
+      ),
+      const CategoryModel(
+        id: 'cat_transport',
+        name: 'Transportation & Auto',
+        type: CategoryType.expense,
+        iconName: 'directions_car',
+        colorHex: '#358397', // Slate Teal
+        isSystemDefault: true,
+      ),
+      const CategoryModel(
+        id: 'cat_subscriptions',
+        name: 'Subscriptions & Digital Services',
+        type: CategoryType.expense,
+        iconName: 'subscriptions',
+        colorHex: '#8ECAE6', // Periwinkle
         isSystemDefault: true,
       ),
       const CategoryModel(
         id: 'cat_health',
-        name: 'Health & Medical',
+        name: 'Health & Wellness',
         type: CategoryType.expense,
         iconName: 'medical_services',
-        colorHex: '#00C853',
+        colorHex: '#748B75', // Sage Green
+        isSystemDefault: true,
+      ),
+      const CategoryModel(
+        id: 'cat_loans',
+        name: 'Debt & Loans',
+        type: CategoryType.expense,
+        iconName: 'account_balance',
+        colorHex: '#3F37C9', // Electric Indigo
+        isSystemDefault: true,
+      ),
+      const CategoryModel(
+        id: 'cat_shopping',
+        name: 'Shopping & Personal Care',
+        type: CategoryType.expense,
+        iconName: 'shopping_bag',
+        colorHex: '#00BFA5', // Teal Cyan
+        isSystemDefault: true,
+      ),
+      const CategoryModel(
+        id: 'cat_education',
+        name: 'Education & Improvement',
+        type: CategoryType.expense,
+        iconName: 'school',
+        colorHex: '#B19CD9', // Dusty Lilac
         isSystemDefault: true,
       ),
       const CategoryModel(
         id: 'cat_travel',
-        name: 'Travel',
+        name: 'General & Misc',
         type: CategoryType.expense,
-        iconName: 'flight',
-        colorHex: '#FFAB00',
+        iconName: 'category',
+        colorHex: '#607D8B', // Cool Slate
         isSystemDefault: true,
       ),
 
@@ -159,7 +183,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         name: 'Salary',
         type: CategoryType.income,
         iconName: 'work',
-        colorHex: '#00C853',
+        colorHex: '#A8F3D0', // Cyber Mint
         isSystemDefault: true,
       ),
       const CategoryModel(
@@ -167,7 +191,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         name: 'Freelance & Business',
         type: CategoryType.income,
         iconName: 'laptop_mac',
-        colorHex: '#00F5D4',
+        colorHex: '#50C2E5', // Glacier Blue
         isSystemDefault: true,
       ),
       const CategoryModel(
@@ -175,7 +199,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         name: 'Investments & Returns',
         type: CategoryType.income,
         iconName: 'trending_up',
-        colorHex: '#9B5DE5',
+        colorHex: '#9D4EDD', // Amethyst Purple
         isSystemDefault: true,
       ),
       const CategoryModel(
@@ -183,7 +207,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         name: 'Gifts & Rewards',
         type: CategoryType.income,
         iconName: 'card_giftcard',
-        colorHex: '#FFA500',
+        colorHex: '#00BFA5', // Teal Cyan
         isSystemDefault: true,
       ),
     ]);

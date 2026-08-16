@@ -180,7 +180,7 @@ class SettingsPage extends StatelessWidget {
                     _buildSettingsTile(
                       context: context,
                       icon: Icons.account_balance_wallet_rounded,
-                      color: AppColors.primary,
+                      color: AppColors.secondary,
                       title: 'Accounts & Wallets',
                       subtitle:
                           'Manage bank accounts, digital wallets, credit cards & balances',
@@ -235,7 +235,7 @@ class SettingsPage extends StatelessWidget {
                     _buildSettingsTile(
                       context: context,
                       icon: Icons.currency_exchange_rounded,
-                      color: AppColors.secondary,
+                      color: AppColors.primary,
                       title: 'Primary Currency',
                       subtitle: 'Selected: $currencyCode ($currencySymbol)',
                       onTap: () => context.push(AppRoutes.currencySettings),

@@ -340,32 +340,37 @@ class _AddEditCategoryDialogState extends State<AddEditCategoryDialog> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Row(
-                  children: _colorOptions.map((hex) {
-                    final isSelected = _selectedColorHex == hex;
-                    final color = Color(
-                        int.parse('ff${hex.replaceFirst('#', '')}', radix: 16));
+                SizedBox(
+                  height: 35,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: _colorOptions.map((hex) {
+                      final isSelected = _selectedColorHex == hex;
+                      final color = Color(int.parse(
+                          'ff${hex.replaceFirst('#', '')}',
+                          radix: 16));
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedColorHex = hex;
-                        });
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.only(right: 12),
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                          border: isSelected
-                              ? Border.all(color: Colors.white, width: 2.5)
-                              : null,
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedColorHex = hex;
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 12),
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                            border: isSelected
+                                ? Border.all(color: Colors.white, width: 2.5)
+                                : null,
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 ),
                 const SizedBox(height: 24),
 

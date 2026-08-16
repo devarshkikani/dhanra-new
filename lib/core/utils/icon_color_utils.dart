@@ -115,6 +115,12 @@ abstract class IconColorUtils {
       case 'home':
       case 'rent':
         return Icons.home_rounded;
+      case 'subscriptions':
+      case 'digital':
+        return Icons.subscriptions_rounded;
+      case 'account_balance':
+      case 'loans':
+        return Icons.account_balance_rounded;
       case 'fitness_center':
       case 'gym':
         return Icons.fitness_center_rounded;

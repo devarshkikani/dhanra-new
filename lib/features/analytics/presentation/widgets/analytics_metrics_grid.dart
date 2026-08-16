@@ -11,8 +11,16 @@ class AnalyticsMetricsGrid extends StatelessWidget {
 
   final AnalyticsDataEntity data;
 
+  Color _getSavingsRateColor(double rate) {
+    if (rate >= 20) return AppColors.credit;
+    if (rate >= 10) return AppColors.warning;
+    return AppColors.debit;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final savingsColor = _getSavingsRateColor(data.savingsRate);
+
     return Column(
       children: [
         Row(
@@ -41,12 +49,13 @@ class AnalyticsMetricsGrid extends StatelessWidget {
           children: [
             Expanded(
               child: _buildMetricTile(
-                title: 'Net Cash Flow',
-                amount: '₹${data.netCashFlow.toStringAsFixed(0)}',
-                color: data.netCashFlow >= 0
-                    ? AppColors.secondary
-                    : AppColors.warning,
-                icon: Icons.account_balance_rounded,
+                title: 'Net Savings Rate',
+                amount: '${data.savingsRate.toStringAsFixed(1)}%',
+                color: savingsColor,
+                icon: Icons.savings_rounded,
+                badgeText: data.savingsRate >= 20
+                    ? 'Healthy'
+                    : (data.savingsRate >= 10 ? 'Moderate' : 'Low'),
               ),
             ),
             const SizedBox(width: 12),
@@ -69,6 +78,7 @@ class AnalyticsMetricsGrid extends StatelessWidget {
     required String amount,
     required Color color,
     required IconData icon,
+    String? badgeText,
   }) {
     return GlassCard(
       borderRadius: 18,
@@ -79,12 +89,15 @@ class AnalyticsMetricsGrid extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Container(
@@ -98,13 +111,38 @@ class AnalyticsMetricsGrid extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            amount,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  amount,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (badgeText != null) ...[
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    badgeText,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ],
       ),

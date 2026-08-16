@@ -10,6 +10,7 @@ import 'package:dhanra_new/features/analytics/presentation/widgets/analytics_met
 import 'package:dhanra_new/features/analytics/presentation/widgets/cash_flow_trend_card.dart';
 import 'package:dhanra_new/features/analytics/presentation/widgets/category_breakdown_chart_card.dart';
 import 'package:dhanra_new/features/analytics/presentation/widgets/income_vs_expense_chart_card.dart';
+import 'package:dhanra_new/features/analytics/presentation/widgets/peak_spending_insight_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -103,24 +104,39 @@ class _AnalyticsView extends StatelessWidget {
                         children: [
                           AppChip(
                             label: 'This Week',
-                            isSelected: data.timeRange == AnalyticsTimeRange.weekly,
+                            isSelected:
+                                data.timeRange == AnalyticsTimeRange.weekly,
                             onTap: () => context.read<AnalyticsBloc>().add(
-                                  const TimeRangeChangedEvent(AnalyticsTimeRange.weekly),
+                                  const TimeRangeChangedEvent(
+                                      AnalyticsTimeRange.weekly),
                                 ),
                           ),
                           AppSpacing.hGapXS,
                           AppChip(
                             label: 'This Month',
-                            isSelected: data.timeRange == AnalyticsTimeRange.monthly,
+                            isSelected:
+                                data.timeRange == AnalyticsTimeRange.monthly,
                             onTap: () => context.read<AnalyticsBloc>().add(
-                                  const TimeRangeChangedEvent(AnalyticsTimeRange.monthly),
+                                  const TimeRangeChangedEvent(
+                                      AnalyticsTimeRange.monthly),
+                                ),
+                          ),
+                          AppSpacing.hGapXS,
+                          AppChip(
+                            label: 'This Year',
+                            isSelected:
+                                data.timeRange == AnalyticsTimeRange.yearly,
+                            onTap: () => context.read<AnalyticsBloc>().add(
+                                  const TimeRangeChangedEvent(
+                                      AnalyticsTimeRange.yearly),
                                 ),
                           ),
                           AppSpacing.hGapXS,
                           AppChip(
                             label: 'Custom Range',
                             icon: Icons.calendar_month_rounded,
-                            isSelected: data.timeRange == AnalyticsTimeRange.custom,
+                            isSelected:
+                                data.timeRange == AnalyticsTimeRange.custom,
                             onTap: () => _pickCustomDateRange(context),
                           ),
                         ],
@@ -132,16 +148,20 @@ class _AnalyticsView extends StatelessWidget {
                     AnalyticsMetricsGrid(data: data),
                     AppSpacing.vGapMD,
 
-                    // 3. Income vs Expense Comparison Chart
+                    // 3. Peak Spending & Category Highlights
+                    PeakSpendingInsightCard(data: data),
+                    AppSpacing.vGapMD,
+
+                    // 4. Income vs Expense Comparison Chart
                     IncomeVsExpenseChartCard(trends: data.trends),
                     AppSpacing.vGapMD,
 
-                    // 4. Category Breakdown Distribution Chart
+                    // 5. Category Breakdown Distribution Chart
                     CategoryBreakdownChartCard(
                         categories: data.categoryBreakdowns),
                     AppSpacing.vGapMD,
 
-                    // 5. Net Cash Flow Trajectory
+                    // 6. Net Cash Flow Trajectory
                     CashFlowTrendCard(trends: data.trends),
                   ],
                 ),

@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 enum AnalyticsTimeRange {
   weekly,
   monthly,
+  yearly,
   custom,
 }
 
@@ -15,6 +16,8 @@ extension AnalyticsTimeRangeX on AnalyticsTimeRange {
         return 'This Week';
       case AnalyticsTimeRange.monthly:
         return 'This Month';
+      case AnalyticsTimeRange.yearly:
+        return 'This Year';
       case AnalyticsTimeRange.custom:
         return 'Custom';
     }
@@ -30,6 +33,9 @@ class AnalyticsDataEntity extends Equatable {
     required this.topExpenseCategory,
     required this.categoryBreakdowns,
     required this.trends,
+    this.savingsRate = 0.0,
+    this.peakSpendDay = 'N/A',
+    this.peakSpendAmount = 0.0,
     this.timeRange = AnalyticsTimeRange.monthly,
     this.startDate,
     this.endDate,
@@ -42,6 +48,9 @@ class AnalyticsDataEntity extends Equatable {
   final String topExpenseCategory;
   final List<CategorySpendingEntity> categoryBreakdowns;
   final List<MonthlyTrendEntity> trends;
+  final double savingsRate;
+  final String peakSpendDay;
+  final double peakSpendAmount;
   final AnalyticsTimeRange timeRange;
   final DateTime? startDate;
   final DateTime? endDate;
@@ -55,6 +64,9 @@ class AnalyticsDataEntity extends Equatable {
         topExpenseCategory,
         categoryBreakdowns,
         trends,
+        savingsRate,
+        peakSpendDay,
+        peakSpendAmount,
         timeRange,
         startDate,
         endDate,
